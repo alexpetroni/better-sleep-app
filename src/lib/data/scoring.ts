@@ -11,11 +11,12 @@ import type {
 	CausalLabel,
 	SleepArchetypeId,
 	ExternalSaboteurId,
-	InternalSaboteurId
+	InternalSaboteurId,
+	EmotionalSaboteurId
 } from '$lib/types';
 import { sleepArchetypes } from './archetypes';
 import { pillars, allPillarIds, adaptationPhases, scenarios, causalLabels } from './pillars';
-import { step2Items, step3Items, step4Questions } from './steps';
+import { step2Items, step3Items, step4Items, step5Questions } from './steps';
 import { pillarActions } from './protocols';
 
 // Archetype → pillar seeds: each archetype contributes hits to relevant pillars
@@ -37,12 +38,13 @@ export function calculateDiagnosticResult(state: DiagnosticState): DiagnosticRes
 
 	const externalCount = state.externalSaboteurs.length;
 	const internalCount = state.internalSaboteurs.length;
-	const saboteurDominance = classifySaboteurDominance(externalCount, internalCount);
+	const emotionalCount = state.emotionalSaboteurs.length;
+	const saboteurDominance = classifySaboteurDominance(externalCount, internalCount, emotionalCount);
 
 	const safetyCompromised = state.safetyScore >= 3;
 	const adaptationPhase = deriveAdaptationPhase(state.safetyScore);
 
-	const scenarioId = determineScenario(saboteurDominance, safetyCompromised, externalCount + internalCount);
+	const scenarioId = determineScenario(saboteurDominance, safetyCompromised, externalCount + internalCount + emotionalCount);
 	const scenario = scenarios[scenarioId];
 
 	const compromisedPillars = calculateCompromisedPillars(state);
@@ -59,6 +61,11 @@ export function calculateDiagnosticResult(state: DiagnosticState): DiagnosticRes
 		return { id: id as InternalSaboteurId, label: item?.label ?? id };
 	});
 
+	const selectedEmotionalSaboteurs = state.emotionalSaboteurs.map((id) => {
+		const item = step4Items.find((i) => i.id === id);
+		return { id: id as EmotionalSaboteurId, label: item?.label ?? id };
+	});
+
 	return {
 		archetype,
 		causalLabels: derivedCausalLabels,
@@ -66,8 +73,10 @@ export function calculateDiagnosticResult(state: DiagnosticState): DiagnosticRes
 		saboteurDominance,
 		externalSaboteurCount: externalCount,
 		internalSaboteurCount: internalCount,
+		emotionalSaboteurCount: emotionalCount,
 		selectedExternalSaboteurs,
 		selectedInternalSaboteurs,
+		selectedEmotionalSaboteurs,
 		safetyScore: state.safetyScore,
 		safetyCompromised,
 		scenario,
@@ -87,18 +96,34 @@ function deriveCausalLabels(state: DiagnosticState): CausalLabel[] {
 			}
 		}
 	}
+	for (const sabId of state.emotionalSaboteurs) {
+		const item = step4Items.find((i) => i.id === sabId);
+		if (item?.causalLabel) {
+			const label = causalLabels[item.causalLabel];
+			if (!labels.some((l) => l.id === label.id)) {
+				labels.push(label);
+			}
+		}
+	}
 	return labels;
 }
 
 function classifySaboteurDominance(
 	externalCount: number,
-	internalCount: number
+	internalCount: number,
+	emotionalCount: number
 ): SaboteurDominance {
+	// Thresholds: external ≥3/19, internal ≥2/12, emotional ≥2/4
+	// TODO: external threshold stays at ≥3 (16% of 19). Reconsider after real data collection.
 	const externalDominant = externalCount >= 3;
 	const internalDominant = internalCount >= 2;
-	if (externalDominant && internalDominant) return 'BOTH';
+	const emotionalDominant = emotionalCount >= 2;
+
+	const dominantCount = [externalDominant, internalDominant, emotionalDominant].filter(Boolean).length;
+	if (dominantCount >= 2) return 'MIXED';
 	if (externalDominant) return 'EXTERNAL';
 	if (internalDominant) return 'INTERNAL';
+	if (emotionalDominant) return 'EMOTIONAL';
 	return 'NONE';
 }
 
@@ -114,10 +139,12 @@ function determineScenario(
 	totalSaboteurs: number
 ): import('$lib/types').ScenarioId {
 	if (safetyCompromised && saboteurType === 'INTERNAL') return 'MEDICAL';
+	if (safetyCompromised && saboteurType === 'EMOTIONAL') return 'MEDICAL';
 	if (safetyCompromised) return 'NEUROENDOCRINE';
-	if (saboteurType === 'BOTH') return 'GRADUAL';
+	if (saboteurType === 'MIXED') return 'GRADUAL';
 	if (saboteurType === 'EXTERNAL') return 'LIFESTYLE';
 	if (saboteurType === 'INTERNAL') return 'MEDICAL';
+	if (saboteurType === 'EMOTIONAL') return 'MEDICAL';
 	if (totalSaboteurs > 0) return 'GRADUAL';
 	return 'LIFESTYLE';
 }
@@ -156,9 +183,18 @@ function calculateCompromisedPillars(
 		}
 	}
 
+	for (const sabId of state.emotionalSaboteurs) {
+		const item = step4Items.find((i) => i.id === sabId);
+		if (item) {
+			for (const pillarId of item.pillarImpact) {
+				pillarHits[pillarId]++;
+			}
+		}
+	}
+
 	for (const [qId, answer] of Object.entries(state.safetyAnswers)) {
 		if (answer) {
-			const question = step4Questions.find((q) => q.id === qId);
+			const question = step5Questions.find((q) => q.id === qId);
 			if (question) {
 				for (const pillarId of question.pillarImpact) {
 					pillarHits[pillarId]++;

@@ -155,5 +155,20 @@ export const causalLabels: Record<CausalLabelId, CausalLabel> = {
 		id: 'NEUROMOTOR',
 		name: 'Neuromotor',
 		description: 'Sindromul picioarelor neliniștite semnalează un dezechilibru de fier sau dopamină care perturbă adormirea.'
+	},
+	DEFICIENCY: {
+		id: 'DEFICIENCY',
+		name: 'Deficit Nutrițional',
+		description: 'Deficitul de fier sau magneziu perturbă semnalele nervoase și împiedică relaxarea musculară necesară somnului.'
+	},
+	INFLAMMATORY: {
+		id: 'INFLAMMATORY',
+		name: 'Inflamator',
+		description: 'Inflamația cronică menține sistemul imunitar în alertă permanentă, sabotând capacitatea corpului de a intra în somn profund.'
+	},
+	EMOTIONAL: {
+		id: 'EMOTIONAL',
+		name: 'Emoțional',
+		description: 'Experiențele emoționale neintegrate mențin hipervigilența — corpul nu se simte suficient de sigur pentru a se abandona somnului.'
 	}
 };

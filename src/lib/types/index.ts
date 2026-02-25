@@ -24,7 +24,10 @@ export type CausalLabelId =
 	| 'HORMONAL'
 	| 'RESPIRATORY'
 	| 'UROLOGICAL'
-	| 'NEUROMOTOR';
+	| 'NEUROMOTOR'
+	| 'DEFICIENCY'
+	| 'INFLAMMATORY'
+	| 'EMOTIONAL';
 
 export interface CausalLabel {
 	id: CausalLabelId;
@@ -46,7 +49,16 @@ export type ExternalSaboteurId =
 	| 'CHILD_NOISE_WAKING'
 	| 'BEDROOM_NOT_DARK'
 	| 'WARM_BEDROOM'
-	| 'LATE_EATING';
+	| 'LATE_EATING'
+	| 'INTENSE_EVENING_EXERCISE'
+	| 'PARTNER_DISTURBANCE'
+	| 'WORKING_IN_BED'
+	| 'EVENING_FLUIDS'
+	| 'NICOTINE'
+	| 'BAD_MATTRESS'
+	| 'POOR_VENTILATION'
+	| 'STIMULANT_MEDICATION'
+	| 'SUBSTANCE_WITHDRAWAL';
 
 // ═══════════════════════════════════════
 // INTERNAL SABOTEURS (Step 3)
@@ -60,7 +72,21 @@ export type InternalSaboteurId =
 	| 'HORMONAL'
 	| 'APNEA'
 	| 'NOCTURIA'
-	| 'RLS';
+	| 'RLS'
+	| 'IRON_MAGNESIUM_DEFICIT'
+	| 'CHRONIC_INFLAMMATION'
+	| 'BRUXISM'
+	| 'DYSBIOSIS';
+
+// ═══════════════════════════════════════
+// EMOTIONAL SABOTEURS (Step 4)
+// ═══════════════════════════════════════
+
+export type EmotionalSaboteurId =
+	| 'UNRESOLVED_TRAUMA'
+	| 'DEPRESSION'
+	| 'CHRONIC_ANXIETY'
+	| 'RELATIONAL_STRESS';
 
 // ═══════════════════════════════════════
 // SABOTEUR ITEM (shared for steps 2 & 3)
@@ -71,6 +97,7 @@ export interface SaboteurItem {
 	label: string;
 	pillarImpact: PillarId[];
 	causalLabel?: CausalLabelId;
+	details?: string;
 }
 
 // ═══════════════════════════════════════
@@ -97,7 +124,7 @@ export interface Pillar {
 export type PillarStatus = 'OK' | 'COMPROMISED' | 'CRITICAL';
 
 // ═══════════════════════════════════════
-// SAFETY ASSESSMENT (Step 4)
+// SAFETY ASSESSMENT (Step 5)
 // ═══════════════════════════════════════
 
 export interface SafetyQuestion {
@@ -119,7 +146,7 @@ export interface AdaptationPhase {
 }
 
 // ═══════════════════════════════════════
-// SCENARIOS (Step 5 output)
+// SCENARIOS (Step 6 output)
 // ═══════════════════════════════════════
 
 export type ScenarioId = 'LIFESTYLE' | 'MEDICAL' | 'NEUROENDOCRINE' | 'GRADUAL';
@@ -153,15 +180,16 @@ export interface ProtocolPhase {
 // DIAGNOSTIC STATE
 // ═══════════════════════════════════════
 
-export type DiagnosticStep = 1 | 2 | 3 | 4 | 5;
+export type DiagnosticStep = 1 | 2 | 3 | 4 | 5 | 6;
 
-export type SaboteurDominance = 'EXTERNAL' | 'INTERNAL' | 'BOTH' | 'NONE';
+export type SaboteurDominance = 'EXTERNAL' | 'INTERNAL' | 'EMOTIONAL' | 'MIXED' | 'NONE';
 
 export interface DiagnosticState {
 	currentStep: DiagnosticStep;
 	selectedArchetype: SleepArchetypeId | null;
 	externalSaboteurs: ExternalSaboteurId[];
 	internalSaboteurs: InternalSaboteurId[];
+	emotionalSaboteurs: EmotionalSaboteurId[];
 	safetyAnswers: Record<string, boolean>;
 	safetyScore: number;
 }
@@ -177,8 +205,10 @@ export interface DiagnosticResult {
 	saboteurDominance: SaboteurDominance;
 	externalSaboteurCount: number;
 	internalSaboteurCount: number;
+	emotionalSaboteurCount: number;
 	selectedExternalSaboteurs: { id: ExternalSaboteurId; label: string }[];
 	selectedInternalSaboteurs: { id: InternalSaboteurId; label: string }[];
+	selectedEmotionalSaboteurs: { id: EmotionalSaboteurId; label: string }[];
 	safetyScore: number;
 	safetyCompromised: boolean;
 	scenario: Scenario;

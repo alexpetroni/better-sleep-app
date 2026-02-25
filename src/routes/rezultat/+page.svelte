@@ -47,9 +47,9 @@
       <!-- SABOTEUR SUMMARY -->
       <ResultSection title="Analiza sabotorilor">
         {#snippet children()}
-          <div class="grid gap-4 sm:grid-cols-3">
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div class="rounded-lg bg-white p-4 ring-1 ring-sand-200 text-center">
-              <p class="text-2xl font-semibold text-sand-900">{diagnosticResult.externalSaboteurCount}<span class="text-sm text-sand-400">/10</span></p>
+              <p class="text-2xl font-semibold text-sand-900">{diagnosticResult.externalSaboteurCount}<span class="text-sm text-sand-400">/19</span></p>
               <p class="mt-1 text-sm text-sand-600">Sabotori externi</p>
               {#if diagnosticResult.externalSaboteurCount >= 3}
                 <span class="mt-2 inline-block rounded-full bg-warm-100 px-2 py-0.5 text-xs font-medium text-warm-800">Dominant</span>
@@ -59,13 +59,23 @@
               {/if}
             </div>
             <div class="rounded-lg bg-white p-4 ring-1 ring-sand-200 text-center">
-              <p class="text-2xl font-semibold text-sand-900">{diagnosticResult.internalSaboteurCount}<span class="text-sm text-sand-400">/8</span></p>
+              <p class="text-2xl font-semibold text-sand-900">{diagnosticResult.internalSaboteurCount}<span class="text-sm text-sand-400">/12</span></p>
               <p class="mt-1 text-sm text-sand-600">Sabotori interni</p>
               {#if diagnosticResult.internalSaboteurCount >= 2}
                 <span class="mt-2 inline-block rounded-full bg-warm-100 px-2 py-0.5 text-xs font-medium text-warm-800">Dominant</span>
               {/if}
               {#if diagnosticResult.selectedInternalSaboteurs.length > 0}
                 <p class="mt-2 text-xs text-sand-500 leading-relaxed">{diagnosticResult.selectedInternalSaboteurs.map(s => s.label).join(', ')}</p>
+              {/if}
+            </div>
+            <div class="rounded-lg bg-white p-4 ring-1 ring-sand-200 text-center">
+              <p class="text-2xl font-semibold text-sand-900">{diagnosticResult.emotionalSaboteurCount}<span class="text-sm text-sand-400">/4</span></p>
+              <p class="mt-1 text-sm text-sand-600">Sabotori emoționali</p>
+              {#if diagnosticResult.emotionalSaboteurCount >= 2}
+                <span class="mt-2 inline-block rounded-full bg-warm-100 px-2 py-0.5 text-xs font-medium text-warm-800">Dominant</span>
+              {/if}
+              {#if diagnosticResult.selectedEmotionalSaboteurs.length > 0}
+                <p class="mt-2 text-xs italic text-sand-500 leading-relaxed">{diagnosticResult.selectedEmotionalSaboteurs.map(s => s.label).join(', ')}</p>
               {/if}
             </div>
             <div class="rounded-lg bg-white p-4 ring-1 ring-sand-200 text-center">
@@ -115,6 +125,13 @@
             <h4 class="font-serif text-lg font-medium text-night-900">{diagnosticResult.scenario.title}</h4>
             <p class="mt-1 text-sm leading-relaxed text-night-700">{diagnosticResult.scenario.description}</p>
           </div>
+          {#if diagnosticResult.saboteurDominance === 'EMOTIONAL'}
+            <div class="mt-3 rounded-lg border-l-4 border-l-warm-400 bg-warm-50 px-5 py-4">
+              <p class="text-sm leading-relaxed text-sand-700">
+                Cauzele tale dominante sunt emoționale. Psihoterapia (EMDR, terapie cognitivă, somatică) poate fi cel mai eficient prim pas. Un terapeut specializat în traumă sau anxietate te poate ajuta să restabilești sentimentul de siguranță de care corpul tău are nevoie pentru a se abandona somnului.
+              </p>
+            </div>
+          {/if}
         {/snippet}
       </ResultSection>
 

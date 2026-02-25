@@ -3,7 +3,8 @@ import type {
 	SaboteurItem,
 	SafetyQuestion,
 	ExternalSaboteurId,
-	InternalSaboteurId
+	InternalSaboteurId,
+	EmotionalSaboteurId
 } from '$lib/types';
 
 // ═══════════════════════════════════════
@@ -31,15 +32,11 @@ export const step1Options: Step1Option[] = [
 // ═══════════════════════════════════════
 
 export const step2Items: SaboteurItem[] = [
+	// — Ritm și program —
 	{
-		id: 'CAFFEINE_LATE' satisfies ExternalSaboteurId,
-		label: 'Beau cofeină după ora 14:00',
+		id: 'IRREGULAR_SCHEDULE' satisfies ExternalSaboteurId,
+		label: 'Programul meu de somn variază mult',
 		pillarImpact: ['CIRCADIAN_COHERENCE']
-	},
-	{
-		id: 'SCREENS_LATE' satisfies ExternalSaboteurId,
-		label: 'Stau pe ecrane după ora 22:00',
-		pillarImpact: ['CIRCADIAN_COHERENCE', 'EMOTIONAL_CLOSURE']
 	},
 	{
 		id: 'NO_MORNING_LIGHT' satisfies ExternalSaboteurId,
@@ -47,8 +44,40 @@ export const step2Items: SaboteurItem[] = [
 		pillarImpact: ['CIRCADIAN_COHERENCE', 'HORMONAL_HARMONY']
 	},
 	{
-		id: 'IRREGULAR_SCHEDULE' satisfies ExternalSaboteurId,
-		label: 'Programul meu de somn variază mult',
+		id: 'NO_DAILY_MOVEMENT' satisfies ExternalSaboteurId,
+		label: 'Nu fac mișcare zilnic',
+		pillarImpact: ['MITOCHONDRIAL_INTEGRITY', 'NEUROVEGETATIVE_SAFETY']
+	},
+	// — Obiceiuri seara —
+	{
+		id: 'SCREENS_LATE' satisfies ExternalSaboteurId,
+		label: 'Stau pe ecrane după ora 22:00',
+		pillarImpact: ['CIRCADIAN_COHERENCE', 'EMOTIONAL_CLOSURE']
+	},
+	{
+		id: 'WORKING_IN_BED' satisfies ExternalSaboteurId,
+		label: 'Lucrez sau stau pe telefon în pat',
+		pillarImpact: ['EMOTIONAL_CLOSURE', 'CIRCADIAN_COHERENCE']
+	},
+	{
+		id: 'LATE_EATING' satisfies ExternalSaboteurId,
+		label: 'Mănânc mult sau târziu seara (sub 2h înainte de somn)',
+		pillarImpact: ['METABOLIC_QUIET']
+	},
+	{
+		id: 'EVENING_FLUIDS' satisfies ExternalSaboteurId,
+		label: 'Beau multe lichide seara',
+		pillarImpact: ['METABOLIC_QUIET']
+	},
+	{
+		id: 'INTENSE_EVENING_EXERCISE' satisfies ExternalSaboteurId,
+		label: 'Fac sport intens seara (sub 3h înainte de somn)',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY']
+	},
+	// — Substanțe —
+	{
+		id: 'CAFFEINE_LATE' satisfies ExternalSaboteurId,
+		label: 'Beau cofeină după ora 14:00',
 		pillarImpact: ['CIRCADIAN_COHERENCE']
 	},
 	{
@@ -57,15 +86,21 @@ export const step2Items: SaboteurItem[] = [
 		pillarImpact: ['METABOLIC_QUIET', 'GLYMPHATIC_FLOW']
 	},
 	{
-		id: 'NO_DAILY_MOVEMENT' satisfies ExternalSaboteurId,
-		label: 'Nu fac mișcare zilnic',
-		pillarImpact: ['MITOCHONDRIAL_INTEGRITY', 'NEUROVEGETATIVE_SAFETY']
+		id: 'NICOTINE' satisfies ExternalSaboteurId,
+		label: 'Fumez sau folosesc nicotină (țigări, vape)',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'CIRCADIAN_COHERENCE']
 	},
 	{
-		id: 'CHILD_NOISE_WAKING' satisfies ExternalSaboteurId,
-		label: 'Copil / zgomot mă trezește',
+		id: 'STIMULANT_MEDICATION' satisfies ExternalSaboteurId,
+		label: 'Iau medicamente care pot afecta somnul (corticosteroizi, antidepresive, stimulante)',
+		pillarImpact: ['CIRCADIAN_COHERENCE', 'NEUROVEGETATIVE_SAFETY']
+	},
+	{
+		id: 'SUBSTANCE_WITHDRAWAL' satisfies ExternalSaboteurId,
+		label: 'Am redus recent o substanță (somnifere, alcool, benzodiazepine)',
 		pillarImpact: ['NEUROVEGETATIVE_SAFETY']
 	},
+	// — Dormitor —
 	{
 		id: 'BEDROOM_NOT_DARK' satisfies ExternalSaboteurId,
 		label: 'Dormitorul nu e complet întunecat',
@@ -77,9 +112,24 @@ export const step2Items: SaboteurItem[] = [
 		pillarImpact: ['NEUROVEGETATIVE_SAFETY']
 	},
 	{
-		id: 'LATE_EATING' satisfies ExternalSaboteurId,
-		label: 'Mănânc mult sau târziu seara (sub 2h înainte de somn)',
-		pillarImpact: ['METABOLIC_QUIET']
+		id: 'POOR_VENTILATION' satisfies ExternalSaboteurId,
+		label: 'Dormitorul e slab ventilat (aer închis)',
+		pillarImpact: ['RESPIRATORY_STABILITY']
+	},
+	{
+		id: 'BAD_MATTRESS' satisfies ExternalSaboteurId,
+		label: 'Salteaua sau perna mea sunt inconfortabile',
+		pillarImpact: ['GLYMPHATIC_FLOW']
+	},
+	{
+		id: 'PARTNER_DISTURBANCE' satisfies ExternalSaboteurId,
+		label: 'Partenerul mă deranjează noaptea (sforăit, mișcare)',
+		pillarImpact: ['GLYMPHATIC_FLOW']
+	},
+	{
+		id: 'CHILD_NOISE_WAKING' satisfies ExternalSaboteurId,
+		label: 'Copil / zgomot mă trezește',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY']
 	}
 ];
 
@@ -90,59 +140,126 @@ export const step2Items: SaboteurItem[] = [
 export const step3Items: SaboteurItem[] = [
 	{
 		id: 'REFLUX' satisfies InternalSaboteurId,
-		label: 'Am reflux gastric (arsuri, regurgitare)',
+		label: 'Simt arsuri în stomac sau gust acid în gură, mai ales când mă culc',
 		pillarImpact: ['METABOLIC_QUIET', 'RESPIRATORY_STABILITY'],
-		causalLabel: 'GASTROINTESTINAL'
+		causalLabel: 'GASTROINTESTINAL',
+		details: 'Când te culci, acidul urcă din stomac și irită esofagul. Asta activează reflexe de protecție care te trezesc — chiar dacă nu simți arsura conștient.'
 	},
 	{
 		id: 'CHRONIC_PAIN' satisfies InternalSaboteurId,
-		label: 'Am dureri cronice',
+		label: 'Am dureri care nu trec — de spate, articulare, de cap, sau în alte zone',
 		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'EMOTIONAL_CLOSURE'],
-		causalLabel: 'PAIN'
+		causalLabel: 'PAIN',
+		details: 'Durerea ține sistemul nervos în alertă permanentă. Chiar și când adormi, creierul rămâne vigilent și nu permite somnul profund restaurator.'
 	},
 	{
 		id: 'HISTAMINE' satisfies InternalSaboteurId,
-		label: 'Am simptome de histamină (mâncărimi, congestie, înroșirea feței)',
+		label: 'Seara am nasul înfundat, mâncărimi pe piele sau obrajii înroșiți — fără motiv clar',
 		pillarImpact: ['METABOLIC_QUIET', 'GLYMPHATIC_FLOW'],
-		causalLabel: 'HISTAMINE'
+		causalLabel: 'HISTAMINE',
+		details: 'Histamina este o moleculă de „trezie" — atunci când nivelul ei crește seara (alergii, intoleranțe, stres), creierul primește semnal de alertă în loc de semnal de somn.'
 	},
 	{
 		id: 'BLOOD_SUGAR' satisfies InternalSaboteurId,
-		label: 'Am glicemie instabilă (foame, tremur, transpirații nocturne)',
+		label: 'Mă trezesc noaptea cu foame, tremur, transpirații sau inima care bate tare',
 		pillarImpact: ['METABOLIC_QUIET', 'HORMONAL_HARMONY'],
-		causalLabel: 'METABOLIC'
+		causalLabel: 'METABOLIC',
+		details: 'Când zahărul din sânge scade brusc noaptea, corpul eliberează cortizol și adrenalină ca să compenseze. Te trezești cu inima care bate, transpirații sau senzație de foame.'
 	},
 	{
 		id: 'HORMONAL' satisfies InternalSaboteurId,
-		label: 'Am dezechilibru hormonal (perimenopauză, andropauză, tiroidă, ciclu)',
+		label: 'Am bufeuri, transpirații nocturne, ciclu neregulat sau schimbări legate de vârstă',
 		pillarImpact: ['HORMONAL_HARMONY'],
-		causalLabel: 'HORMONAL'
+		causalLabel: 'HORMONAL',
+		details: 'Progesteronul, estrogenul și hormonii tiroidieni influențează direct temperatura corporală și producția de melatonină. Când fluctuează, somnul devine instabil.'
 	},
 	{
 		id: 'APNEA' satisfies InternalSaboteurId,
-		label: 'Am sforăit / suspiciune de apnee de somn',
+		label: 'Sforăi, am pauze de respirație în somn sau mă trezesc cu gura uscată și oboseală',
 		pillarImpact: ['RESPIRATORY_STABILITY', 'GLYMPHATIC_FLOW'],
-		causalLabel: 'RESPIRATORY'
+		causalLabel: 'RESPIRATORY',
+		details: 'Când căile aeriene se blochează în somn, creierul te trezește pentru a respira. Asta poate apărea de zeci de ori pe noapte fără să-ți amintești.'
 	},
 	{
 		id: 'NOCTURIA' satisfies InternalSaboteurId,
-		label: 'Mă trezesc frecvent pentru a urina',
+		label: 'Mă trezesc de 2+ ori pe noapte ca să merg la baie',
 		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'HORMONAL_HARMONY'],
-		causalLabel: 'UROLOGICAL'
+		causalLabel: 'UROLOGICAL',
+		details: 'Trezirile repetate fragmentează ciclurile de somn. Dacă te trezești de 2+ ori, nu mai ajungi în fazele profunde de regenerare. Cauza poate fi hormonală, nu doar legată de lichide.'
 	},
 	{
 		id: 'RLS' satisfies InternalSaboteurId,
-		label: 'Am picioare neliniștite (nevoia de a le mișca, mai ales seara)',
+		label: 'Simt nevoia să-mi mișc picioarele seara — un disconfort care nu mă lasă să stau liniștit/ă',
 		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'MITOCHONDRIAL_INTEGRITY'],
-		causalLabel: 'NEUROMOTOR'
+		causalLabel: 'NEUROMOTOR',
+		details: 'Senzația de disconfort în picioare este legată de un dezechilibru de dopamină sau fier. Apare tipic seara, exact când încerci să te relaxezi pentru somn.'
+	},
+	{
+		id: 'IRON_MAGNESIUM_DEFICIT' satisfies InternalSaboteurId,
+		label: 'Am crampe musculare, oboseală permanentă, sau mi s-a spus că am fierul/magneziul scăzut',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'MITOCHONDRIAL_INTEGRITY'],
+		causalLabel: 'DEFICIENCY',
+		details: 'Fierul e necesar pentru dopamină (care reglează mișcarea și relaxarea). Magneziul relaxează mușchii și calmează sistemul nervos. Fără ele, corpul nu poate „coborî turațiile".'
+	},
+	{
+		id: 'CHRONIC_INFLAMMATION' satisfies InternalSaboteurId,
+		label: 'Am dureri difuze, ceață mentală sau o boală autoimună diagnosticată',
+		pillarImpact: ['GLYMPHATIC_FLOW', 'MITOCHONDRIAL_INTEGRITY'],
+		causalLabel: 'INFLAMMATORY',
+		details: 'Inflamația cronică eliberează citokine care perturbă somnul profund. De aceea, după perioade de boală sau stres intens, somnul devine superficial și neodihnitor.'
+	},
+	{
+		id: 'BRUXISM' satisfies InternalSaboteurId,
+		label: 'Mă trezesc cu maxilarul încleștat sau mi s-a spus că scrâșnesc din dinți noaptea',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY'],
+		causalLabel: 'NEUROMOTOR',
+		details: 'Scrâșnitul dinților este un semn că sistemul nervos rămâne activat și în somn. Este frecvent legat de stres, anxietate sau probleme de ocluzie dentară.'
+	},
+	{
+		id: 'DYSBIOSIS' satisfies InternalSaboteurId,
+		label: 'Am frecvent balonare, disconfort abdominal sau intoleranțe alimentare',
+		pillarImpact: ['METABOLIC_QUIET', 'GLYMPHATIC_FLOW'],
+		causalLabel: 'GASTROINTESTINAL',
+		details: 'Intestinul produce ~95% din serotonina corpului (precursorul melatoninei). Când flora intestinală este perturbată, producția de melatonină are de suferit.'
 	}
 ];
 
 // ═══════════════════════════════════════
-// STEP 4 — Biological Safety (yes/no × 5)
+// STEP 4 — Emotional Saboteurs (multi-select)
 // ═══════════════════════════════════════
 
-export const step4Questions: SafetyQuestion[] = [
+export const step4Items: SaboteurItem[] = [
+	{
+		id: 'UNRESOLVED_TRAUMA' satisfies EmotionalSaboteurId,
+		label: 'Am trecut printr-o pierdere, un divorț sau o experiență grea care încă mă afectează',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'EMOTIONAL_CLOSURE'],
+		causalLabel: 'EMOTIONAL'
+	},
+	{
+		id: 'DEPRESSION' satisfies EmotionalSaboteurId,
+		label: 'Dimineața nu am chef de nimic — parcă totul e gri și fără rost',
+		pillarImpact: ['EMOTIONAL_CLOSURE', 'CIRCADIAN_COHERENCE'],
+		causalLabel: 'EMOTIONAL'
+	},
+	{
+		id: 'CHRONIC_ANXIETY' satisfies EmotionalSaboteurId,
+		label: 'Simt un nod în stomac sau în piept care nu trece — o neliniște de fond, tot timpul',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'EMOTIONAL_CLOSURE'],
+		causalLabel: 'EMOTIONAL'
+	},
+	{
+		id: 'RELATIONAL_STRESS' satisfies EmotionalSaboteurId,
+		label: 'Acasă e tensiune — relația cu partenerul sau familia mă consumă',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'EMOTIONAL_CLOSURE'],
+		causalLabel: 'EMOTIONAL'
+	}
+];
+
+// ═══════════════════════════════════════
+// STEP 5 — Biological Safety (yes/no × 5)
+// ═══════════════════════════════════════
+
+export const step5Questions: SafetyQuestion[] = [
 	{
 		id: 'S1',
 		text: 'Mă simt în alertă seara, chiar dacă sunt obosit/ă?',
@@ -175,6 +292,7 @@ export const stepMeta = [
 	{ number: 1, title: 'Tiparul', subtitle: 'Care e problema ta dominantă?' },
 	{ number: 2, title: 'Externi', subtitle: 'Ce faci tu care afectează somnul?' },
 	{ number: 3, title: 'Interni', subtitle: 'Ce face corpul tău noaptea?' },
-	{ number: 4, title: 'Siguranță', subtitle: 'Se simte corpul tău în siguranță?' },
-	{ number: 5, title: 'Rezultat', subtitle: 'Analiza ta personalizată' }
+	{ number: 4, title: 'Emoții', subtitle: 'Ce simți tu?' },
+	{ number: 5, title: 'Siguranță', subtitle: 'Se simte corpul tău în siguranță?' },
+	{ number: 6, title: 'Rezultat', subtitle: 'Analiza ta personalizată' }
 ] as const;

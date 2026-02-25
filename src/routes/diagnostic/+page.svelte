@@ -13,17 +13,19 @@
     selectArchetype,
     submitExternalSaboteurs,
     submitInternalSaboteurs,
+    submitEmotionalSaboteurs,
     submitSafetyAnswers,
     goBackOneStep,
     resetDiagnostic
   } from '$lib/stores/diagnostic';
-  import { step1Options, step2Items, step3Items, step4Questions, stepMeta } from '$lib/data/steps';
-  import type { SleepArchetypeId, ExternalSaboteurId, InternalSaboteurId } from '$lib/types';
+  import { step1Options, step2Items, step3Items, step4Items, step5Questions, stepMeta } from '$lib/data/steps';
+  import type { SleepArchetypeId, ExternalSaboteurId, InternalSaboteurId, EmotionalSaboteurId } from '$lib/types';
 
   // Local state for multi-select steps (preserved when going back)
   let step2Selected = $state<string[]>([]);
   let step3Selected = $state<string[]>([]);
-  let step4Answers = $state<Record<string, boolean | undefined>>({});
+  let step4Selected = $state<string[]>([]);
+  let step5Answers = $state<Record<string, boolean | undefined>>({});
 
   // Animation state
   let visible = $state(true);
@@ -59,6 +61,12 @@
   }
 
   // Step 3
+  let step3ExpandedInfo = $state<string | null>(null);
+
+  function toggleStep3Info(id: string) {
+    step3ExpandedInfo = step3ExpandedInfo === id ? null : id;
+  }
+
   function toggleStep3(id: string) {
     if (step3Selected.includes(id)) {
       step3Selected = step3Selected.filter((s) => s !== id);
@@ -71,21 +79,34 @@
     animateTransition(() => submitInternalSaboteurs([...step3Selected] as InternalSaboteurId[]));
   }
 
-  // Step 4
-  function setStep4Answer(id: string, val: boolean) {
-    step4Answers = { ...step4Answers, [id]: val };
+  // Step 4 — Emotional Saboteurs
+  function toggleStep4(id: string) {
+    if (step4Selected.includes(id)) {
+      step4Selected = step4Selected.filter((s) => s !== id);
+    } else {
+      step4Selected = [...step4Selected, id];
+    }
   }
 
   function handleStep4Submit() {
+    animateTransition(() => submitEmotionalSaboteurs([...step4Selected] as EmotionalSaboteurId[]));
+  }
+
+  // Step 5 — Safety
+  function setStep5Answer(id: string, val: boolean) {
+    step5Answers = { ...step5Answers, [id]: val };
+  }
+
+  function handleStep5Submit() {
     const finalAnswers: Record<string, boolean> = {};
-    for (const q of step4Questions) {
-      finalAnswers[q.id] = step4Answers[q.id] ?? false;
+    for (const q of step5Questions) {
+      finalAnswers[q.id] = step5Answers[q.id] ?? false;
     }
     animateTransition(() => submitSafetyAnswers(finalAnswers));
   }
 
-  let allStep4Answered = $derived(
-    step4Questions.every((q) => step4Answers[q.id] !== undefined)
+  let allStep5Answered = $derived(
+    step5Questions.every((q) => step5Answers[q.id] !== undefined)
   );
 
   // Back
@@ -170,11 +191,33 @@
               <legend class="sr-only">Sabotori interni</legend>
               <div class="space-y-3">
                 {#each step3Items as item}
-                  <CheckboxOption
-                    label={item.label}
-                    checked={step3Selected.includes(item.id)}
-                    onchange={() => toggleStep3(item.id)}
-                  />
+                  <div>
+                    <div class="flex items-start gap-2">
+                      <div class="flex-1">
+                        <CheckboxOption
+                          label={item.label}
+                          checked={step3Selected.includes(item.id)}
+                          onchange={() => toggleStep3(item.id)}
+                        />
+                      </div>
+                      {#if item.details}
+                        <button
+                          type="button"
+                          class="mt-0.5 shrink-0 text-sand-400 hover:text-night-600 transition-colors"
+                          onclick={() => toggleStep3Info(item.id)}
+                          aria-label="Mai multe detalii"
+                          aria-expanded={step3ExpandedInfo === item.id}
+                        >
+                          <span class="text-base leading-none">ⓘ</span>
+                        </button>
+                      {/if}
+                    </div>
+                    {#if step3ExpandedInfo === item.id && item.details}
+                      <p class="ml-6 mt-1 text-xs leading-relaxed text-sand-500 bg-sand-50 rounded px-3 py-2">
+                        {item.details}
+                      </p>
+                    {/if}
+                  </div>
                 {/each}
               </div>
             </fieldset>
@@ -189,28 +232,56 @@
         {/snippet}
       </QuestionCard>
 
-    <!-- STEP 4: Biological Safety -->
+    <!-- STEP 4: Emotional Saboteurs -->
     {:else if $currentStep === 4}
-      <QuestionCard text={stepMeta[3].subtitle} subtext="Răspunde sincer — nu există răspunsuri greșite.">
+      <QuestionCard text={stepMeta[3].subtitle} subtext="">
+        {#snippet children()}
+          <div class="space-y-4">
+            <fieldset>
+              <legend class="sr-only">Sabotori emoționali</legend>
+              <div class="space-y-3">
+                {#each step4Items as item}
+                  <CheckboxOption
+                    label={item.label}
+                    checked={step4Selected.includes(item.id)}
+                    onchange={() => toggleStep4(item.id)}
+                  />
+                {/each}
+              </div>
+            </fieldset>
+            <button
+              type="button"
+              class="mt-6 w-full rounded-md bg-night-600 px-4 py-3 text-base font-semibold text-white shadow-xs hover:bg-night-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-night-600 transition-colors"
+              onclick={handleStep4Submit}
+            >
+              Continuă
+            </button>
+          </div>
+        {/snippet}
+      </QuestionCard>
+
+    <!-- STEP 5: Biological Safety -->
+    {:else if $currentStep === 5}
+      <QuestionCard text={stepMeta[4].subtitle} subtext="Răspunde sincer — nu există răspunsuri greșite.">
         {#snippet children()}
           <div class="space-y-4">
             <div class="space-y-3">
-              {#each step4Questions as question}
+              {#each step5Questions as question}
                 <YesNoQuestion
                   text={question.text}
-                  value={step4Answers[question.id]}
-                  onchange={(val) => setStep4Answer(question.id, val)}
+                  value={step5Answers[question.id]}
+                  onchange={(val) => setStep5Answer(question.id, val)}
                 />
               {/each}
             </div>
             <button
               type="button"
               class="mt-6 w-full rounded-md px-4 py-3 text-base font-semibold shadow-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-night-600
-                {allStep4Answered
+                {allStep5Answered
                   ? 'bg-night-600 text-white hover:bg-night-500'
                   : 'bg-sand-200 text-sand-400 cursor-not-allowed'}"
-              disabled={!allStep4Answered}
-              onclick={handleStep4Submit}
+              disabled={!allStep5Answered}
+              onclick={handleStep5Submit}
             >
               Vezi rezultatul
             </button>

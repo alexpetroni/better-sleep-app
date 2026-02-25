@@ -5,6 +5,7 @@ import type {
 	SleepArchetypeId,
 	ExternalSaboteurId,
 	InternalSaboteurId,
+	EmotionalSaboteurId,
 	DiagnosticResult
 } from '$lib/types';
 import { calculateDiagnosticResult } from '$lib/data/scoring';
@@ -15,6 +16,7 @@ function createInitialState(): DiagnosticState {
 		selectedArchetype: null,
 		externalSaboteurs: [],
 		internalSaboteurs: [],
+		emotionalSaboteurs: [],
 		safetyAnswers: {},
 		safetyScore: 0
 	};
@@ -27,12 +29,12 @@ export const currentStep = derived(diagnosticState, ($state) => $state.currentSt
 
 export const progress = derived(diagnosticState, ($state) => ({
 	current: $state.currentStep,
-	total: 5,
-	percentage: (($state.currentStep - 1) / 4) * 100
+	total: 6,
+	percentage: (($state.currentStep - 1) / 5) * 100
 }));
 
 export const result = derived(diagnosticState, ($state): DiagnosticResult | null => {
-	if ($state.currentStep < 5 || !$state.selectedArchetype) return null;
+	if ($state.currentStep < 6 || !$state.selectedArchetype) return null;
 	return calculateDiagnosticResult($state);
 });
 
@@ -48,13 +50,17 @@ export function submitInternalSaboteurs(selected: InternalSaboteurId[]): void {
 	diagnosticState.update((s) => ({ ...s, internalSaboteurs: selected, currentStep: 4 }));
 }
 
+export function submitEmotionalSaboteurs(selected: EmotionalSaboteurId[]): void {
+	diagnosticState.update((s) => ({ ...s, emotionalSaboteurs: selected, currentStep: 5 }));
+}
+
 export function submitSafetyAnswers(answers: Record<string, boolean>): void {
 	const score = Object.values(answers).filter(Boolean).length;
 	diagnosticState.update((s) => ({
 		...s,
 		safetyAnswers: answers,
 		safetyScore: score,
-		currentStep: 5 as DiagnosticStep
+		currentStep: 6 as DiagnosticStep
 	}));
 	isComplete.set(true);
 }

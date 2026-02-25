@@ -26,7 +26,8 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 		remove: [
 			{ text: 'Fără știri, social media sau conținut stresant seara', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 1 },
 			{ text: 'Răcorește dormitorul la 18-20°C (aer condiționat, fereastră deschisă, ventilator)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 2 },
-			{ text: 'Elimină surse de zgomot din dormitor (sau folosește dopuri)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 3 }
+			{ text: 'Elimină surse de zgomot din dormitor (sau folosește dopuri)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 3 },
+			{ text: 'Evită nicotina cu 4h înainte de somn', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 3 }
 		],
 		repair: [
 			{ text: '10 minute respirație vagală seara (expir mai lung decât inspir)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 1 },
@@ -97,7 +98,8 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 		],
 		repair: [
 			{ text: 'Respirație nazală (practică ziua, consideră plasture nocturn)', pillar: 'RESPIRATORY_STABILITY', priority: 1 },
-			{ text: 'Elevație ușoară a capului (15-20°) dacă ai reflux', pillar: 'RESPIRATORY_STABILITY', priority: 2 }
+			{ text: 'Elevație ușoară a capului (15-20°) dacă ai reflux', pillar: 'RESPIRATORY_STABILITY', priority: 2 },
+			{ text: 'Ventilează dormitorul 15 min înainte de culcare', pillar: 'RESPIRATORY_STABILITY', priority: 2 }
 		],
 		regulate: [
 			{ text: 'Evaluare pentru apnee de somn (polisomnografie) dacă sforăi regulat', pillar: 'RESPIRATORY_STABILITY', priority: 1 },
@@ -115,7 +117,8 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 		],
 		regulate: [
 			{ text: 'Practică recunoștința seara (3 lucruri pentru care ești recunoscător)', pillar: 'EMOTIONAL_CLOSURE', priority: 2 },
-			{ text: 'Tranziție conștientă zi→seară: schimbă hainele, spală-te pe față, semnalizează corpului', pillar: 'EMOTIONAL_CLOSURE', priority: 1 }
+			{ text: 'Tranziție conștientă zi→seară: schimbă hainele, spală-te pe față, semnalizează corpului', pillar: 'EMOTIONAL_CLOSURE', priority: 1 },
+			{ text: 'Consideră psihoterapie (EMDR, terapie cognitivă) dacă ai experiențe nerezolvate', pillar: 'EMOTIONAL_CLOSURE', priority: 1 }
 		]
 	}
 };
