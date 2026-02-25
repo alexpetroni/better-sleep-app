@@ -15,11 +15,12 @@
     submitInternalSaboteurs,
     submitEmotionalSaboteurs,
     submitSafetyAnswers,
+    submitDemographics,
     goBackOneStep,
     resetDiagnostic
   } from '$lib/stores/diagnostic';
-  import { step1Options, step2Items, step3Items, step4Items, step5Questions, stepMeta } from '$lib/data/steps';
-  import type { SleepArchetypeId, ExternalSaboteurId, InternalSaboteurId, EmotionalSaboteurId } from '$lib/types';
+  import { step1Options, step2Items, step3Items, step4Items, step5Questions, stepMeta, sexOptions, ageRangeOptions, menopauseOptions, bodyTypeOptions } from '$lib/data/steps';
+  import type { SleepArchetypeId, ExternalSaboteurId, InternalSaboteurId, EmotionalSaboteurId, BiologicalSex, AgeRange, MenopauseStatus, BodyType } from '$lib/types';
 
   // Local state for multi-select steps (preserved when going back)
   let step2Selected = $state<string[]>([]);
@@ -109,6 +110,32 @@
     step5Questions.every((q) => step5Answers[q.id] !== undefined)
   );
 
+  // Step 6 — Demographics
+  let step6Sex = $state<BiologicalSex | null>(null);
+  let step6Age = $state<AgeRange | null>(null);
+  let step6Menopause = $state<MenopauseStatus | null>(null);
+  let step6Body = $state<BodyType | null>(null);
+
+  let showMenopause = $derived(
+    step6Sex === 'F' && (step6Age === '46_55' || step6Age === '56_PLUS')
+  );
+
+  let allStep6Answered = $derived(
+    step6Sex !== null && step6Age !== null && step6Body !== null &&
+    (!showMenopause || step6Menopause !== null)
+  );
+
+  function handleStep6Submit() {
+    if (!step6Sex || !step6Age || !step6Body) return;
+    const menopause: MenopauseStatus = showMenopause && step6Menopause ? step6Menopause : 'NA';
+    animateTransition(() => submitDemographics({
+      sex: step6Sex!,
+      ageRange: step6Age!,
+      menopauseStatus: menopause,
+      bodyType: step6Body!
+    }));
+  }
+
   // Back
   function handleBack() {
     animateTransition(() => goBackOneStep());
@@ -156,7 +183,7 @@
 
     <!-- STEP 2: External Saboteurs -->
     {:else if $currentStep === 2}
-      <QuestionCard text={stepMeta[1].subtitle} subtext="Bifează tot ce este adevărat pentru tine. Poți continua și fără să bifezi nimic.">
+      <QuestionCard text={stepMeta[1].subtitle} subtext="Bifează tot ce e adevărat pentru tine. Poți continua și fără să bifezi nimic.">
         {#snippet children()}
           <div class="space-y-4">
             <fieldset>
@@ -262,7 +289,7 @@
 
     <!-- STEP 5: Biological Safety -->
     {:else if $currentStep === 5}
-      <QuestionCard text={stepMeta[4].subtitle} subtext="Răspunde sincer — nu există răspunsuri greșite.">
+      <QuestionCard text={stepMeta[4].subtitle} subtext="Răspunde sincer, nu există răspunsuri greșite. Alege DA sau NU pentru fiecare.">
         {#snippet children()}
           <div class="space-y-4">
             <div class="space-y-3">
@@ -282,6 +309,84 @@
                   : 'bg-sand-200 text-sand-400 cursor-not-allowed'}"
               disabled={!allStep5Answered}
               onclick={handleStep5Submit}
+            >
+              Continuă
+            </button>
+          </div>
+        {/snippet}
+      </QuestionCard>
+
+    <!-- STEP 6: Demographics -->
+    {:else if $currentStep === 6}
+      <QuestionCard text={stepMeta[5].subtitle} subtext="Ne ajută să personalizăm recomandările pentru tine.">
+        {#snippet children()}
+          <div class="space-y-6">
+            <!-- Sex -->
+            <fieldset>
+              <legend class="text-sm font-medium text-sand-700 mb-2">Sex</legend>
+              <div class="space-y-2">
+                {#each sexOptions as option}
+                  <OptionButton
+                    label={option.label}
+                    selected={step6Sex === option.id}
+                    onclick={() => { step6Sex = option.id; }}
+                  />
+                {/each}
+              </div>
+            </fieldset>
+
+            <!-- Age range -->
+            <fieldset>
+              <legend class="text-sm font-medium text-sand-700 mb-2">Vârstă</legend>
+              <div class="space-y-2">
+                {#each ageRangeOptions as option}
+                  <OptionButton
+                    label={option.label}
+                    selected={step6Age === option.id}
+                    onclick={() => { step6Age = option.id; }}
+                  />
+                {/each}
+              </div>
+            </fieldset>
+
+            <!-- Menopause (conditional) -->
+            {#if showMenopause}
+              <fieldset>
+                <legend class="text-sm font-medium text-sand-700 mb-2">Status menopauză</legend>
+                <div class="space-y-2">
+                  {#each menopauseOptions as option}
+                    <OptionButton
+                      label={option.label}
+                      selected={step6Menopause === option.id}
+                      onclick={() => { step6Menopause = option.id; }}
+                    />
+                  {/each}
+                </div>
+              </fieldset>
+            {/if}
+
+            <!-- Body type -->
+            <fieldset>
+              <legend class="text-sm font-medium text-sand-700 mb-2">Tipologie corporală</legend>
+              <div class="space-y-2">
+                {#each bodyTypeOptions as option}
+                  <OptionButton
+                    label={option.label}
+                    selected={step6Body === option.id}
+                    onclick={() => { step6Body = option.id; }}
+                  />
+                {/each}
+              </div>
+            </fieldset>
+
+            <button
+              type="button"
+              class="mt-6 w-full rounded-md px-4 py-3 text-base font-semibold shadow-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-night-600
+                {allStep6Answered
+                  ? 'bg-night-600 text-white hover:bg-night-500'
+                  : 'bg-sand-200 text-sand-400 cursor-not-allowed'}"
+              disabled={!allStep6Answered}
+              onclick={handleStep6Submit}
             >
               Vezi rezultatul
             </button>

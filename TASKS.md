@@ -2,14 +2,16 @@
 
 ## Today
 
-- [ ] Testare manuală end-to-end (toate combinațiile de pași)
-- [ ] Inițializare repo git + primul commit
+- [x] Pagina rezultat: rescriere completă — 3-step progressive reveal cu text narativ
+- [x] Creat `narratives.ts` — texte narative per arhetip, cauze, adaptare, scenariu, protocol
+- [x] Adăugat tipuri `ArchetypeNarrative` + `CausalLabelFragment`
+- [x] Builder functions: `buildCausesNarrative`, `buildPillarsNarrative`, `buildProtocolPhaseNarrative`
 
 ## Next
 
-- [ ] Texte arhetipuri extinse — recognition + mechanism per arhetip
-- [ ] Îmbogățire protocols.ts — mai multe acțiuni per pilon, texte mai detaliate
-- [ ] Card siguranță neurovegetativă pe pagina rezultat
+- [ ] Testare manuală end-to-end (toate combinațiile de pași, inclusiv Step 4 emoțional)
+- [ ] Testare narativ: 0 cauze / 1 cauză / 3+ cauze, EMOTIONAL dominance, toate arhetipurile
+- [ ] Back button pe pagina rezultat (step 2 → 1, step 3 → 2)
 - [ ] Sleep Regeneration Score™ — placeholder vizual pe pagina rezultat
 - [ ] CTA email capture pe pagina rezultat
 - [ ] Polish responsive design (testare mobilă completă)
@@ -26,6 +28,28 @@
 - [ ] Variante de limbă (engleză)
 - [ ] Export PDF al rezultatului
 - [ ] Integrare cu dispozitive de somn (wearables)
+
+## Done (2026-02-25 — sesiunea 2)
+
+- [x] Pagina rezultat: rescriere 3-step reveal (tiparul → analiza → protocol)
+- [x] Creat `src/lib/data/narratives.ts` cu texte narative + builder functions
+- [x] Tipuri noi: `ArchetypeNarrative`, `CausalLabelFragment`
+- [x] `buildCausesNarrative()` — adaptiv: 0/1/2+ cauze
+- [x] `buildPillarsNarrative()` — grupează CRITICAL/COMPROMISED, `joinRomanian()`
+- [x] `buildProtocolPhaseNarrative()` — intro + acțiuni cu conectori
+- [x] `emotionalDominanceNarrative` — text dedicat dominanță emoțională
+- [x] Tranziție animată între pașii rezultat + scroll to top
+
+## Done (2026-02-25)
+
+- [x] Adăugat `details?: string` pe SaboteurItem + populat 12 explicații Step 3
+- [x] Rescris label-urile Step 4 (patient-voiced, nu diagnostic)
+- [x] Eliminat callout paternalist din Step 4
+- [x] Reordonat Step 2: ritm → obiceiuri seara → substanțe → dormitor
+- [x] Adăugat causal labels: DEFICIENCY, INFLAMMATORY, EMOTIONAL
+- [x] Extins protocol actions (nicotină, ventilație, psihoterapie)
+- [x] Scoring: suport complet Step 4 emoțional (dominance, scenario, pillars)
+- [x] Rezultat: card sabotori emoționali + notă psihoterapie
 
 ## Done (2026-02-23)
 

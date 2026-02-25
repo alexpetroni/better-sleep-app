@@ -4,7 +4,11 @@ import type {
 	SafetyQuestion,
 	ExternalSaboteurId,
 	InternalSaboteurId,
-	EmotionalSaboteurId
+	EmotionalSaboteurId,
+	BiologicalSex,
+	AgeRange,
+	MenopauseStatus,
+	BodyType
 } from '$lib/types';
 
 // ═══════════════════════════════════════
@@ -20,7 +24,7 @@ export const step1Options: Step1Option[] = [
 	{ id: 'A', label: 'Adorm greu (>30 minute)' },
 	{ id: 'B', label: 'Mă trezesc între 2–4 AM și nu mai pot readormi' },
 	{ id: 'C', label: 'Mă trezesc cu mult înainte de alarmă (4-5 AM)' },
-	{ id: 'D', label: 'Am somnul foarte ușor — mă trezesc de la orice' },
+	{ id: 'D', label: 'Am somnul foarte ușor, mă trezesc de la orice' },
 	{ id: 'E', label: 'Dorm dar mă trezesc obosit' },
 	{ id: 'F', label: 'Nu mi-e somn până foarte târziu' },
 	{ id: 'G', label: 'Mă trezesc cu palpitații / transpirații / foame' },
@@ -143,21 +147,21 @@ export const step3Items: SaboteurItem[] = [
 		label: 'Simt arsuri în stomac sau gust acid în gură, mai ales când mă culc',
 		pillarImpact: ['METABOLIC_QUIET', 'RESPIRATORY_STABILITY'],
 		causalLabel: 'GASTROINTESTINAL',
-		details: 'Când te culci, acidul urcă din stomac și irită esofagul. Asta activează reflexe de protecție care te trezesc — chiar dacă nu simți arsura conștient.'
+		details: 'Când te culci, acidul urcă din stomac și irită esofagul. Asta activează reflexe de protecție care te trezesc, chiar dacă nu simți arsura conștient.'
 	},
 	{
 		id: 'CHRONIC_PAIN' satisfies InternalSaboteurId,
-		label: 'Am dureri care nu trec — de spate, articulare, de cap, sau în alte zone',
+		label: 'Am dureri care nu trec: de spate, articulare, de cap, sau în alte zone',
 		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'EMOTIONAL_CLOSURE'],
 		causalLabel: 'PAIN',
 		details: 'Durerea ține sistemul nervos în alertă permanentă. Chiar și când adormi, creierul rămâne vigilent și nu permite somnul profund restaurator.'
 	},
 	{
 		id: 'HISTAMINE' satisfies InternalSaboteurId,
-		label: 'Seara am nasul înfundat, mâncărimi pe piele sau obrajii înroșiți — fără motiv clar',
+		label: 'Seara am nasul înfundat, mâncărimi pe piele sau obrajii înroșiți, fără motiv clar',
 		pillarImpact: ['METABOLIC_QUIET', 'GLYMPHATIC_FLOW'],
 		causalLabel: 'HISTAMINE',
-		details: 'Histamina este o moleculă de „trezie" — atunci când nivelul ei crește seara (alergii, intoleranțe, stres), creierul primește semnal de alertă în loc de semnal de somn.'
+		details: 'Histamina e o moleculă de „trezie". Când nivelul ei crește seara (alergii, intoleranțe, stres), creierul primește semnal de alertă în loc de semnal de somn.'
 	},
 	{
 		id: 'BLOOD_SUGAR' satisfies InternalSaboteurId,
@@ -189,10 +193,10 @@ export const step3Items: SaboteurItem[] = [
 	},
 	{
 		id: 'RLS' satisfies InternalSaboteurId,
-		label: 'Simt nevoia să-mi mișc picioarele seara — un disconfort care nu mă lasă să stau liniștit/ă',
+		label: 'Simt nevoia să-mi mișc picioarele seara, un disconfort care nu mă lasă să stau liniștit/ă',
 		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'MITOCHONDRIAL_INTEGRITY'],
 		causalLabel: 'NEUROMOTOR',
-		details: 'Senzația de disconfort în picioare este legată de un dezechilibru de dopamină sau fier. Apare tipic seara, exact când încerci să te relaxezi pentru somn.'
+		details: 'Senzația de disconfort în picioare e legată de un dezechilibru de dopamină sau fier. Apare tipic seara, exact când încerci să te relaxezi.'
 	},
 	{
 		id: 'IRON_MAGNESIUM_DEFICIT' satisfies InternalSaboteurId,
@@ -206,21 +210,21 @@ export const step3Items: SaboteurItem[] = [
 		label: 'Am dureri difuze, ceață mentală sau o boală autoimună diagnosticată',
 		pillarImpact: ['GLYMPHATIC_FLOW', 'MITOCHONDRIAL_INTEGRITY'],
 		causalLabel: 'INFLAMMATORY',
-		details: 'Inflamația cronică eliberează citokine care perturbă somnul profund. De aceea, după perioade de boală sau stres intens, somnul devine superficial și neodihnitor.'
+		details: 'Inflamația cronică eliberează citokine care perturbă somnul profund. După perioade de boală sau stres intens, somnul devine superficial și neodihnitor.'
 	},
 	{
 		id: 'BRUXISM' satisfies InternalSaboteurId,
 		label: 'Mă trezesc cu maxilarul încleștat sau mi s-a spus că scrâșnesc din dinți noaptea',
 		pillarImpact: ['NEUROVEGETATIVE_SAFETY'],
 		causalLabel: 'NEUROMOTOR',
-		details: 'Scrâșnitul dinților este un semn că sistemul nervos rămâne activat și în somn. Este frecvent legat de stres, anxietate sau probleme de ocluzie dentară.'
+		details: 'Scrâșnitul dinților e un semn că sistemul nervos rămâne activat și în somn. Frecvent legat de stres, anxietate sau probleme de ocluzie dentară.'
 	},
 	{
 		id: 'DYSBIOSIS' satisfies InternalSaboteurId,
 		label: 'Am frecvent balonare, disconfort abdominal sau intoleranțe alimentare',
 		pillarImpact: ['METABOLIC_QUIET', 'GLYMPHATIC_FLOW'],
 		causalLabel: 'GASTROINTESTINAL',
-		details: 'Intestinul produce ~95% din serotonina corpului (precursorul melatoninei). Când flora intestinală este perturbată, producția de melatonină are de suferit.'
+		details: 'Intestinul produce ~95% din serotonina corpului (precursorul melatoninei). Când flora intestinală e perturbată, producția de melatonină are de suferit.'
 	}
 ];
 
@@ -237,19 +241,19 @@ export const step4Items: SaboteurItem[] = [
 	},
 	{
 		id: 'DEPRESSION' satisfies EmotionalSaboteurId,
-		label: 'Dimineața nu am chef de nimic — parcă totul e gri și fără rost',
+		label: 'Dimineața nu am chef de nimic, parcă totul e gri și fără rost',
 		pillarImpact: ['EMOTIONAL_CLOSURE', 'CIRCADIAN_COHERENCE'],
 		causalLabel: 'EMOTIONAL'
 	},
 	{
 		id: 'CHRONIC_ANXIETY' satisfies EmotionalSaboteurId,
-		label: 'Simt un nod în stomac sau în piept care nu trece — o neliniște de fond, tot timpul',
+		label: 'Simt un nod în stomac sau în piept care nu trece, o neliniște de fond, tot timpul',
 		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'EMOTIONAL_CLOSURE'],
 		causalLabel: 'EMOTIONAL'
 	},
 	{
 		id: 'RELATIONAL_STRESS' satisfies EmotionalSaboteurId,
-		label: 'Acasă e tensiune — relația cu partenerul sau familia mă consumă',
+		label: 'Acasă e tensiune, relația cu partenerul sau familia mă consumă',
 		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'EMOTIONAL_CLOSURE'],
 		causalLabel: 'EMOTIONAL'
 	}
@@ -294,5 +298,37 @@ export const stepMeta = [
 	{ number: 3, title: 'Interni', subtitle: 'Ce face corpul tău noaptea?' },
 	{ number: 4, title: 'Emoții', subtitle: 'Ce simți tu?' },
 	{ number: 5, title: 'Siguranță', subtitle: 'Se simte corpul tău în siguranță?' },
-	{ number: 6, title: 'Rezultat', subtitle: 'Analiza ta personalizată' }
+	{ number: 6, title: 'Profil', subtitle: 'Câteva detalii despre tine' },
+	{ number: 7, title: 'Rezultat', subtitle: 'Analiza ta personalizată' }
 ] as const;
+
+// ═══════════════════════════════════════
+// STEP 6 — Demographics options
+// ═══════════════════════════════════════
+
+export const sexOptions: { id: BiologicalSex; label: string }[] = [
+	{ id: 'M', label: 'Bărbat' },
+	{ id: 'F', label: 'Femeie' },
+	{ id: 'UNSPECIFIED', label: 'Prefer să nu răspund' }
+];
+
+export const ageRangeOptions: { id: AgeRange; label: string }[] = [
+	{ id: '18_30', label: '18–30 ani' },
+	{ id: '31_45', label: '31–45 ani' },
+	{ id: '46_55', label: '46–55 ani' },
+	{ id: '56_PLUS', label: '56+ ani' }
+];
+
+export const menopauseOptions: { id: MenopauseStatus; label: string }[] = [
+	{ id: 'PRE', label: 'Premenopauză' },
+	{ id: 'PERI', label: 'Perimenopauză' },
+	{ id: 'POST', label: 'Postmenopauză' },
+	{ id: 'UNSURE', label: 'Nu sunt sigură' }
+];
+
+export const bodyTypeOptions: { id: BodyType; label: string }[] = [
+	{ id: 'SLIM', label: 'Subțire' },
+	{ id: 'AVERAGE', label: 'Bine proporționat(ă)' },
+	{ id: 'OVERWEIGHT', label: 'Supraponderal(ă)' },
+	{ id: 'UNSPECIFIED', label: 'Prefer să nu răspund' }
+];

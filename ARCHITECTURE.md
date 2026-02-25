@@ -2,13 +2,13 @@
 
 ## Componente principale
 
-### 1. Flux Diagnostic (5 pași)
+### 1. Flux Diagnostic (6 pași)
 
-Utilizatorul parcurge secvențial 5 pași. Fiecare pas colectează date diferite:
+Utilizatorul parcurge secvențial 6 pași. Fiecare pas colectează date diferite:
 
 ```
-Pas 1 (single-select) → Pas 2 (multi-select) → Pas 3 (multi-select) → Pas 4 (da/nu ×5) → Pas 5 (calcul automat)
-     Tipar somn              Sabotori externi        Sabotori interni       Siguranță biologică       Rezultat
+Pas 1 (single-select) → Pas 2 (multi-select) → Pas 3 (multi-select) → Pas 4 (multi-select) → Pas 5 (da/nu ×5) → Pas 6 (calcul automat)
+     Tipar somn              Sabotori externi        Sabotori interni       Sabotori emoționali       Siguranță biologică       Rezultat
 ```
 
 ### 2. Model de arhetipuri (8, mapate 1:1 cu pattern-urile)
@@ -30,10 +30,11 @@ Cauzele mai profunde (hormonal, metabolic, histamină, respirator, etc.) NU sunt
 
 Scoring **categoric** (nu aditiv). Fiecare pas produce o clasificare discretă:
 - Pas 1 → SleepArchetypeId (mapare directă 1:1, fără rafinare)
-- Pas 2 → extern dominant dacă ≥3 selectate
-- Pas 3 → intern dominant dacă ≥2 selectate + etichete cauzale
-- Pas 4 → safety compromisă dacă scor ≥3/5 + Faza de Adaptare (Alertă/Compensare/Epuizare)
-- Combinarea → ScenarioId (LIFESTYLE / MEDICAL / NEUROENDOCRINE / GRADUAL)
+- Pas 2 → extern dominant dacă ≥3/19 selectate
+- Pas 3 → intern dominant dacă ≥2/12 selectate + etichete cauzale
+- Pas 4 → emoțional dominant dacă ≥2/4 selectate + etichetă cauzală EMOTIONAL
+- Pas 5 → safety compromisă dacă scor ≥3/5 + Faza de Adaptare (Alertă/Compensare/Epuizare)
+- Combinarea → ≥2 categorii dominante = MIXED → ScenarioId (LIFESTYLE / MEDICAL / NEUROENDOCRINE / GRADUAL)
 
 ### 4. Sistem de Piloni
 
@@ -45,6 +46,15 @@ Agregăm hits: 1-2 = COMPROMISED, 3+ = CRITICAL.
 3 faze (Remove → Repair → Regulate) × max 5 acțiuni.
 Acțiunile sunt selectate din pool-uri per pilon, prioritizate, deduplicate.
 
+### 6. Strat Narativ (Pagina Rezultat)
+
+Pagina de rezultat prezintă informația progresiv, în 3 pași, cu text narativ cald (ton de medic funcțional):
+- **Pas 1 — Tiparul tău de somn**: arhetip, recognition, mecanism biologic, cauze
+- **Pas 2 — Analiza ta**: faza de adaptare, scenariu, notă emoțională (opțional), piloni
+- **Pas 3 — Protocolul personalizat**: 3 sub-secțiuni narative cu acțiunile integrate
+
+Textele sunt în `narratives.ts`: constante narative per entitate + funcții builder (`buildCausesNarrative`, `buildPillarsNarrative`, `buildProtocolPhaseNarrative`) care adaptează narativul la combinația concretă a utilizatorului.
+
 ## Data Flow
 
 ```
@@ -53,7 +63,8 @@ Acțiunile sunt selectate din pool-uri per pilon, prioritizate, deduplicate.
     ├─ Pas 1: SleepArchetypeId ('A'-'H')
     ├─ Pas 2: ExternalSaboteurId[]
     ├─ Pas 3: InternalSaboteurId[]
-    └─ Pas 4: Record<string, boolean> → safetyScore (0-5)
+    ├─ Pas 4: EmotionalSaboteurId[]
+    └─ Pas 5: Record<string, boolean> → safetyScore (0-5)
     │
     ▼
 [DiagnosticState] ─── diagnosticState (writable store)
@@ -63,7 +74,7 @@ Acțiunile sunt selectate din pool-uri per pilon, prioritizate, deduplicate.
     │
     ├─ resolveArchetype() → SleepArchetype
     ├─ deriveCausalLabels() → CausalLabel[]
-    ├─ classifySaboteurDominance() → EXTERNAL/INTERNAL/BOTH/NONE
+    ├─ classifySaboteurDominance() → EXTERNAL/INTERNAL/EMOTIONAL/MIXED/NONE
     ├─ deriveAdaptationPhase() → AdaptationPhase
     ├─ determineScenario() → Scenario
     ├─ calculateCompromisedPillars() → {pillar, status}[]
@@ -73,7 +84,10 @@ Acțiunile sunt selectate din pool-uri per pilon, prioritizate, deduplicate.
 [DiagnosticResult] ─── result (derived store)
     │
     ▼
-[Pagina Rezultat] — render secțiuni: arhetip, sabotori, piloni, protocol
+[Strat Narativ] ─── narratives.ts (builder functions)
+    │
+    ▼
+[Pagina Rezultat] — 3-step progressive reveal cu text narativ
 ```
 
 ## Entități principale
@@ -81,14 +95,17 @@ Acțiunile sunt selectate din pool-uri per pilon, prioritizate, deduplicate.
 | Entitate | Cardinalitate | Descriere |
 |----------|--------------|-----------|
 | SleepArchetype | 8 (A-H) | Tipare de somn (1:1 cu pattern-urile) |
-| CausalLabel | 8 | Etichete cauzale derivate din sabotori interni |
-| ExternalSaboteur | 8 | Factori externi (lifestyle) |
-| InternalSaboteur | 8 | Factori interni/biologici |
+| CausalLabel | 11 | Etichete cauzale derivate din sabotori interni + emoționali |
+| ExternalSaboteur | 19 | Factori externi (lifestyle) |
+| InternalSaboteur | 12 | Factori interni/biologici |
+| EmotionalSaboteur | 4 | Factori emoționali |
 | SafetyQuestion | 5 | Evaluare siguranță biologică |
 | AdaptationPhase | 3 | Alertă Inițială / Compensare Activă / Epuizare Adaptativă |
 | Pillar | 8 | Piloni de regenerare |
 | Scenario | 4 | Scenarii strategice |
 | ProtocolPhase | 3 | Faze protocol (Remove/Repair/Regulate) |
+| ArchetypeNarrative | 8 | Texte recognition + mechanism per arhetip |
+| CausalLabelFragment | 11 | Fraze inline integrale în narativ per etichetă cauzală |
 
 ## Servicii externe
 
@@ -99,5 +116,6 @@ Acțiunile sunt selectate din pool-uri per pilon, prioritizate, deduplicate.
 
 - **Client-side only** — fără SSR pentru date sensibile (totul rămâne în browser)
 - **Max 5 acțiuni per fază de protocol** — pentru a nu copleși utilizatorul
-- **Diagnostic liniar** — 5 pași ficși, fără branching condiționat (spre deosebire de somn)
+- **Diagnostic liniar** — 6 pași ficși, fără branching condiționat (spre deosebire de somn)
+- **SaboteurItem.details** — explicații expandabile ⓘ (Step 3 momentan, extensibil)
 - **Fără dependențe runtime externe** — zero JS libraries beyond Svelte/SvelteKit

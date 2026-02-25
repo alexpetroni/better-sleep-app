@@ -14,7 +14,7 @@ export const sleepArchetypes: Record<SleepArchetypeId, SleepArchetype> = {
 		name: 'Trezire Nocturnă',
 		nameEn: 'Night Waker',
 		description:
-			'Adormi relativ ușor, dar te trezești între 2 și 4 dimineața și nu mai poți readormit.',
+			'Adormi relativ ușor, dar te trezești între 2 și 4 dimineața și nu mai poți readormi.',
 		keyPhrase: 'Mă trezesc la 3 dimineața și gata'
 	},
 	C: {
@@ -30,7 +30,7 @@ export const sleepArchetypes: Record<SleepArchetypeId, SleepArchetype> = {
 		name: 'Somn Ușor',
 		nameEn: 'Light Sleeper',
 		description:
-			'Orice zgomot, mișcare sau schimbare de lumină te trezește. Somnul tău este superficial și fragil.',
+			'Orice zgomot, mișcare sau schimbare de lumină te trezește. Somnul tău e superficial și fragil.',
 		keyPhrase: 'Mă trezesc de la orice'
 	},
 	E: {
@@ -46,7 +46,7 @@ export const sleepArchetypes: Record<SleepArchetypeId, SleepArchetype> = {
 		name: 'Nocturn',
 		nameEn: 'Night Owl',
 		description:
-			'Nu ți-e somn până foarte târziu — la 1, 2, sau 3 noaptea. Dimineața e un chin.',
+			'Nu ți-e somn până foarte târziu: 1, 2, sau 3 noaptea. Dimineața e un chin.',
 		keyPhrase: 'Nu mi-e somn până la 2-3 noaptea'
 	},
 	G: {
@@ -62,7 +62,7 @@ export const sleepArchetypes: Record<SleepArchetypeId, SleepArchetype> = {
 		name: 'Somn Fragmentat',
 		nameEn: 'Fragmented Sleep',
 		description:
-			'Somnul tău e întrerupt constant — te trezești de 3-5 ori pe noapte, fără un motiv clar.',
+			'Somnul tău e întrerupt constant. Te trezești de 3-5 ori pe noapte, fără un motiv clar.',
 		keyPhrase: 'Mă trezesc de mai multe ori în fiecare noapte'
 	}
 };

@@ -6,6 +6,7 @@ import type {
 	ExternalSaboteurId,
 	InternalSaboteurId,
 	EmotionalSaboteurId,
+	Demographics,
 	DiagnosticResult
 } from '$lib/types';
 import { calculateDiagnosticResult } from '$lib/data/scoring';
@@ -18,7 +19,8 @@ function createInitialState(): DiagnosticState {
 		internalSaboteurs: [],
 		emotionalSaboteurs: [],
 		safetyAnswers: {},
-		safetyScore: 0
+		safetyScore: 0,
+		demographics: null
 	};
 }
 
@@ -29,12 +31,12 @@ export const currentStep = derived(diagnosticState, ($state) => $state.currentSt
 
 export const progress = derived(diagnosticState, ($state) => ({
 	current: $state.currentStep,
-	total: 6,
-	percentage: (($state.currentStep - 1) / 5) * 100
+	total: 7,
+	percentage: (($state.currentStep - 1) / 6) * 100
 }));
 
 export const result = derived(diagnosticState, ($state): DiagnosticResult | null => {
-	if ($state.currentStep < 6 || !$state.selectedArchetype) return null;
+	if ($state.currentStep < 7 || !$state.selectedArchetype) return null;
 	return calculateDiagnosticResult($state);
 });
 
@@ -61,6 +63,14 @@ export function submitSafetyAnswers(answers: Record<string, boolean>): void {
 		safetyAnswers: answers,
 		safetyScore: score,
 		currentStep: 6 as DiagnosticStep
+	}));
+}
+
+export function submitDemographics(demographics: Demographics): void {
+	diagnosticState.update((s) => ({
+		...s,
+		demographics,
+		currentStep: 7 as DiagnosticStep
 	}));
 	isComplete.set(true);
 }

@@ -177,10 +177,39 @@ export interface ProtocolPhase {
 }
 
 // ═══════════════════════════════════════
+// NARRATIVES (result page)
+// ═══════════════════════════════════════
+
+export interface ArchetypeNarrative {
+	recognition: string; // Paragraph 1: experience validation
+	mechanism: string; // Paragraph 2: biological explanation
+}
+
+export interface CausalLabelFragment {
+	inlinePhrase: string; // Short phrase that integrates into a sentence
+}
+
+// ═══════════════════════════════════════
+// DEMOGRAPHICS (Step 6)
+// ═══════════════════════════════════════
+
+export type BiologicalSex = 'M' | 'F' | 'UNSPECIFIED';
+export type AgeRange = '18_30' | '31_45' | '46_55' | '56_PLUS';
+export type MenopauseStatus = 'PRE' | 'PERI' | 'POST' | 'UNSURE' | 'NA';
+export type BodyType = 'SLIM' | 'AVERAGE' | 'OVERWEIGHT' | 'UNSPECIFIED';
+
+export interface Demographics {
+	sex: BiologicalSex;
+	ageRange: AgeRange;
+	menopauseStatus: MenopauseStatus;
+	bodyType: BodyType;
+}
+
+// ═══════════════════════════════════════
 // DIAGNOSTIC STATE
 // ═══════════════════════════════════════
 
-export type DiagnosticStep = 1 | 2 | 3 | 4 | 5 | 6;
+export type DiagnosticStep = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export type SaboteurDominance = 'EXTERNAL' | 'INTERNAL' | 'EMOTIONAL' | 'MIXED' | 'NONE';
 
@@ -192,6 +221,7 @@ export interface DiagnosticState {
 	emotionalSaboteurs: EmotionalSaboteurId[];
 	safetyAnswers: Record<string, boolean>;
 	safetyScore: number;
+	demographics: Demographics | null;
 }
 
 // ═══════════════════════════════════════
@@ -214,4 +244,5 @@ export interface DiagnosticResult {
 	scenario: Scenario;
 	compromisedPillars: { pillar: Pillar; status: PillarStatus }[];
 	protocol: ProtocolPhase[];
+	demographics: Demographics | null;
 }

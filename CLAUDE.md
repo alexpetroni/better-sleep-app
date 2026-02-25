@@ -2,7 +2,7 @@
 
 ## Despre proiect
 
-Aplicație web de diagnostic al somnului în 5 pași, care identifică tiparul de somn al utilizatorului, sabotorii externi și interni, evaluează siguranța biologică și generează un protocol personalizat în 3 faze.
+Aplicație web de diagnostic al somnului în 6 pași, care identifică tiparul de somn al utilizatorului, sabotorii externi, interni și emoționali, evaluează siguranța biologică și generează un protocol personalizat în 3 faze.
 
 Spin-off al proiectului `somn` (~/work/somn) — trece de la arhetipuri emoționale la un model clinic structurat.
 
@@ -27,17 +27,18 @@ src/
     types/index.ts     — Toate definițiile de tipuri TypeScript
     data/
       archetypes.ts    — 8 arhetipuri de somn (1:1 cu pattern-urile)
-      steps.ts         — Opțiuni/items pentru fiecare pas (1-4)
+      steps.ts         — Opțiuni/items pentru fiecare pas (1-5)
       pillars.ts       — 8 piloni de regenerare
       protocols.ts     — Acțiuni protocol per pilon per fază
       scoring.ts       — Motor de calcul: pași 1-4 → rezultat final
+      narratives.ts    — Texte narative + builder functions pentru pagina rezultat
     stores/
       diagnostic.ts    — State management (Svelte writable + derived stores)
     components/        — Componente Svelte 5 reutilizabile
   routes/
     +layout.svelte     — Layout global
     +page.svelte       — Landing page
-    diagnostic/        — Fluxul diagnostic în 5 pași
+    diagnostic/        — Fluxul diagnostic în 6 pași
     rezultat/          — Pagina de rezultat personalizat
 ```
 

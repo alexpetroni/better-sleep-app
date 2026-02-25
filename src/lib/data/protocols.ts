@@ -6,6 +6,16 @@ type PhaseActions = {
 	regulate: ProtocolAction[];
 };
 
+// ── Shared action texts (used in multiple pillars — must be identical for deduplication) ──
+
+const SHARED = {
+	NO_ALCOHOL: 'Fără alcool seara (perturbă somnul profund și împiedică curățarea creierului noaptea)',
+	NO_STIMULATING_CONTENT: 'Fără conținut stimulant seara (știri, social media, jocuri, discuții aprinse)',
+	DAILY_MOVEMENT: '20-30 minute mișcare zilnică (plimbare rapidă, zone 2)',
+	HYDRATION: 'Hidratare adecvată, concentrată în prima parte a zilei',
+	OMEGA3: 'Omega-3 zilnic (susține echilibrul hormonal și sănătatea creierului)'
+} as const;
+
 export const pillarActions: Record<PillarId, PhaseActions> = {
 	CIRCADIAN_COHERENCE: {
 		remove: [
@@ -24,14 +34,14 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 	},
 	NEUROVEGETATIVE_SAFETY: {
 		remove: [
-			{ text: 'Fără știri, social media sau conținut stresant seara', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 1 },
+			{ text: SHARED.NO_STIMULATING_CONTENT, pillar: 'NEUROVEGETATIVE_SAFETY', priority: 1 },
 			{ text: 'Răcorește dormitorul la 18-20°C (aer condiționat, fereastră deschisă, ventilator)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 2 },
 			{ text: 'Elimină surse de zgomot din dormitor (sau folosește dopuri)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 3 },
 			{ text: 'Evită nicotina cu 4h înainte de somn', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 3 }
 		],
 		repair: [
 			{ text: '10 minute respirație vagală seara (expir mai lung decât inspir)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 1 },
-			{ text: '20 minute mișcare zilnică (plimbare, zone 2)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 2 }
+			{ text: SHARED.DAILY_MOVEMENT, pillar: 'NEUROVEGETATIVE_SAFETY', priority: 2 }
 		],
 		regulate: [
 			{ text: 'Rutină de descărcare a stresului seara (scris 5 min, stretching)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 1 },
@@ -40,9 +50,8 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 	},
 	METABOLIC_QUIET: {
 		remove: [
-			{ text: 'Fără alcool seara (perturbă somnul profund)', pillar: 'METABOLIC_QUIET', priority: 1 },
-			{ text: 'Evită mesele grele cu 3 ore înainte de somn', pillar: 'METABOLIC_QUIET', priority: 2 },
-			{ text: 'Ultima masă consistentă cu minim 2 ore înainte de somn', pillar: 'METABOLIC_QUIET', priority: 3 }
+			{ text: SHARED.NO_ALCOHOL, pillar: 'METABOLIC_QUIET', priority: 1 },
+			{ text: 'Evită mesele grele cu minim 3 ore înainte de somn', pillar: 'METABOLIC_QUIET', priority: 2 }
 		],
 		repair: [
 			{ text: 'Proteină + grăsime la cină (stabilizează glicemia nocturnă)', pillar: 'METABOLIC_QUIET', priority: 1 },
@@ -58,7 +67,7 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 			{ text: 'Reduce expunerea la perturbatori endocrini (plastice, produse chimice)', pillar: 'HORMONAL_HARMONY', priority: 2 }
 		],
 		repair: [
-			{ text: 'Omega-3 zilnic (susține echilibrul hormonal)', pillar: 'HORMONAL_HARMONY', priority: 1 },
+			{ text: SHARED.OMEGA3, pillar: 'HORMONAL_HARMONY', priority: 1 },
 			{ text: 'Carbohidrați complecși la cină (susțin producția de serotonină/melatonină)', pillar: 'HORMONAL_HARMONY', priority: 2 }
 		],
 		regulate: [
@@ -71,25 +80,25 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 			{ text: 'Reduce dependența de cofeină (scade progresiv, nu brusc)', pillar: 'MITOCHONDRIAL_INTEGRITY', priority: 2 }
 		],
 		repair: [
-			{ text: 'Mișcare zilnică zone 2 (30 min plimbare rapidă)', pillar: 'MITOCHONDRIAL_INTEGRITY', priority: 1 },
-			{ text: 'Hidratare adecvată pe parcursul zilei', pillar: 'MITOCHONDRIAL_INTEGRITY', priority: 2 }
+			{ text: SHARED.DAILY_MOVEMENT, pillar: 'MITOCHONDRIAL_INTEGRITY', priority: 1 },
+			{ text: SHARED.HYDRATION, pillar: 'MITOCHONDRIAL_INTEGRITY', priority: 2 }
 		],
 		regulate: [
-			{ text: 'CoQ10 sau PQQ pentru suport mitocondrial (consulta un specialist)', pillar: 'MITOCHONDRIAL_INTEGRITY', priority: 1 },
+			{ text: 'CoQ10 sau PQQ pentru suport mitocondrial (consultă un specialist)', pillar: 'MITOCHONDRIAL_INTEGRITY', priority: 1 },
 			{ text: 'Expunere la frig controlat (duș rece scurt dimineața)', pillar: 'MITOCHONDRIAL_INTEGRITY', priority: 3 }
 		]
 	},
 	GLYMPHATIC_FLOW: {
 		remove: [
-			{ text: 'Fără alcool seara (blochează curățarea glimfatică)', pillar: 'GLYMPHATIC_FLOW', priority: 1 }
+			{ text: SHARED.NO_ALCOHOL, pillar: 'GLYMPHATIC_FLOW', priority: 1 }
 		],
 		repair: [
 			{ text: 'Dormit pe o parte (facilitează drenajul glimfatic)', pillar: 'GLYMPHATIC_FLOW', priority: 1 },
-			{ text: 'Hidratare bună în prima parte a zilei', pillar: 'GLYMPHATIC_FLOW', priority: 2 }
+			{ text: SHARED.HYDRATION, pillar: 'GLYMPHATIC_FLOW', priority: 2 }
 		],
 		regulate: [
 			{ text: 'Asigură minimum 7 ore de somn continuu', pillar: 'GLYMPHATIC_FLOW', priority: 1 },
-			{ text: 'Omega-3 (DHA) pentru sănătatea membranelor neuronale', pillar: 'GLYMPHATIC_FLOW', priority: 2 }
+			{ text: SHARED.OMEGA3, pillar: 'GLYMPHATIC_FLOW', priority: 2 }
 		]
 	},
 	RESPIRATORY_STABILITY: {
@@ -109,7 +118,7 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 	EMOTIONAL_CLOSURE: {
 		remove: [
 			{ text: 'Fără discuții dificile sau decizii importante după ora 20:00', pillar: 'EMOTIONAL_CLOSURE', priority: 1 },
-			{ text: 'Fără ecrane stimulante seara (știri, social media, jocuri)', pillar: 'EMOTIONAL_CLOSURE', priority: 2 }
+			{ text: SHARED.NO_STIMULATING_CONTENT, pillar: 'EMOTIONAL_CLOSURE', priority: 2 }
 		],
 		repair: [
 			{ text: 'Jurnal de 5 minute seara: scrie ce gânduri/griji ai, apoi „închide" caietul', pillar: 'EMOTIONAL_CLOSURE', priority: 1 },

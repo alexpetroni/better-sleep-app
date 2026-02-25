@@ -1,6 +1,7 @@
 import type {
 	DiagnosticState,
 	DiagnosticResult,
+	Demographics,
 	SaboteurDominance,
 	PillarId,
 	PillarStatus,
@@ -50,6 +51,7 @@ export function calculateDiagnosticResult(state: DiagnosticState): DiagnosticRes
 	const compromisedPillars = calculateCompromisedPillars(state);
 
 	const protocol = generateProtocol(compromisedPillars.map((cp) => cp.pillar.id));
+	const personalizedProtocol = personalizeProtocol(protocol, state.demographics, state.internalSaboteurs);
 
 	const selectedExternalSaboteurs = state.externalSaboteurs.map((id) => {
 		const item = step2Items.find((i) => i.id === id);
@@ -81,7 +83,8 @@ export function calculateDiagnosticResult(state: DiagnosticState): DiagnosticRes
 		safetyCompromised,
 		scenario,
 		compromisedPillars,
-		protocol
+		protocol: personalizedProtocol,
+		demographics: state.demographics
 	};
 }
 
@@ -254,5 +257,54 @@ function deduplicateActions(actions: ProtocolAction[]): ProtocolAction[] {
 		if (seen.has(action.text)) return false;
 		seen.add(action.text);
 		return true;
+	});
+}
+
+function personalizeProtocol(
+	phases: ProtocolPhase[],
+	demographics: Demographics | null,
+	internalSaboteurs: string[]
+): ProtocolPhase[] {
+	if (!demographics) return phases;
+
+	const isMale = demographics.sex === 'M';
+	const isFemale = demographics.sex === 'F';
+	const isPeriPost = isFemale && (demographics.menopauseStatus === 'PERI' || demographics.menopauseStatus === 'POST');
+	const isPre = isFemale && demographics.menopauseStatus === 'PRE';
+	const hasApnea = internalSaboteurs.includes('APNEA');
+	const isOverweight = demographics.bodyType === 'OVERWEIGHT';
+
+	const hormonalRegulateOld = 'Consultă un specialist pentru suport hormonal (progesteron, tiroidă)';
+
+	return phases.map((phase) => {
+		let actions = phase.actions.map((action) => {
+			if (action.text === hormonalRegulateOld) {
+				if (isPeriPost) {
+					return { ...action, text: 'Discută cu ginecologul despre suport hormonal adaptat menopauzei' };
+				} else if (isPre) {
+					return { ...action, text: 'Consultă un medic pentru evaluarea ciclului hormonal (progesteron, tiroidă)' };
+				} else if (isMale) {
+					return { ...action, text: 'Consultă un medic pentru evaluarea hormonilor (testosteron, tiroidă, cortizol)' };
+				}
+			}
+			return action;
+		});
+
+		// Add weight action for RESPIRATORY_STABILITY if overweight + apnea
+		if (isOverweight && hasApnea && phase.id === 'REPAIR') {
+			const hasWeightAction = actions.some((a) => a.text.includes('greutăți') || a.text.includes('greutatea'));
+			if (!hasWeightAction) {
+				actions = [
+					...actions,
+					{
+						text: 'Reducerea greutății poate îmbunătăți respirația în somn',
+						pillar: 'RESPIRATORY_STABILITY' as PillarId,
+						priority: 2
+					}
+				];
+			}
+		}
+
+		return { ...phase, actions };
 	});
 }

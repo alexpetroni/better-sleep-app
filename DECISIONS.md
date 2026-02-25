@@ -38,3 +38,15 @@ QuestionCard, OptionButton, CheckboxOption, ResultSection — copiate verbatim. 
 
 ## [2026-02-23] MVP diagnostic complet — flux funcțional end-to-end
 Toate cele 12 task-uri inițiale implementate într-o singură sesiune: tipuri, date (arhetipuri, pași, piloni, protocoale), motor scoring categoric, store Svelte, 8 componente (4 din somn + 4 noi), 3 pagini (landing, diagnostic, rezultat). Build verificat fără erori. Rămân de făcut: testare manuală, texte extinse, polish UI, și funcționalități Next (safety card, SRS placeholder, email CTA).
+
+## [2026-02-25] Întrebări emoționale rescrise ca stări trăite, nu diagnostice
+Label-urile din Step 4 erau formulate clinic ("Am anxietate persistentă", "Am trecut prin experiențe dificile nerezolvate"). Le-am rescris din perspectiva pacientului: "Simt un nod în stomac care nu trece", "Am trecut printr-un divorț sau o pierdere care încă mă afectează". Am eliminat și callout-ul explicativ ("Nu e vina ta... răspunde cu blândețe") — utilizatorul nu trebuie tratat condescendent.
+
+## [2026-02-25] Info tooltips (ⓘ) pe factorii interni (Step 3)
+Simptomele din Step 3 pot fi neclare — utilizatorul nu înțelege de ce contează un simptom pentru somn. Am adăugat `details` pe SaboteurItem și un buton ⓘ inline care expandează o explicație scurtă (1-2 propoziții, ton de medic funcțional). Implementat direct în +page.svelte, fără a modifica CheckboxOption (componentă din somn).
+
+## [2026-02-25] Factorii externi reordonați pe grupuri tematice
+Întrebările din Step 2 erau în ordine arbitrară — condițiile din dormitor apăreau în locuri diferite, la fel substanțele. Reordonate în 4 grupuri: ritm/program (3), obiceiuri seara (5), substanțe (5), dormitor (6).
+
+## [2026-02-25] Pagina rezultat: de la raport medical la narativ progresiv în 3 pași
+Pagina de rezultat afișa totul simultan — arhetip, sabotori, cauze, piloni, protocol — folosind componente card (ResultSection, PillarCard, ProtocolPhase). Arăta ca un raport medical, nu ca o conversație. Am rescris-o complet: 3 pași progresivi navigați cu buton "Continuă", text narativ cald (ton de medic funcțional, persoana a II-a), fără carduri sau grile. Componentele vechi (ResultSection, PillarCard, ProtocolPhase) rămân în codebase dar nu mai sunt folosite pe pagina de rezultat. Noul strat de date (`narratives.ts`) conține constante narative per entitate și funcții builder care construiesc textul adaptiv (ex: `buildCausesNarrative` produce text diferit pentru 0, 1 sau 2+ cauze). Tranziție animată identică cu pagina de diagnostic.
