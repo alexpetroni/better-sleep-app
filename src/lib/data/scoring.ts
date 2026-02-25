@@ -8,12 +8,27 @@ import type {
 	ProtocolPhaseId,
 	ProtocolAction,
 	AdaptationPhaseId,
-	CausalLabel
+	CausalLabel,
+	SleepArchetypeId,
+	ExternalSaboteurId,
+	InternalSaboteurId
 } from '$lib/types';
 import { sleepArchetypes } from './archetypes';
 import { pillars, allPillarIds, adaptationPhases, scenarios, causalLabels } from './pillars';
 import { step2Items, step3Items, step4Questions } from './steps';
 import { pillarActions } from './protocols';
+
+// Archetype → pillar seeds: each archetype contributes hits to relevant pillars
+const archetypePillarSeeds: Record<SleepArchetypeId, PillarId[]> = {
+	A: ['NEUROVEGETATIVE_SAFETY', 'EMOTIONAL_CLOSURE'],
+	B: ['METABOLIC_QUIET', 'NEUROVEGETATIVE_SAFETY'],
+	C: ['CIRCADIAN_COHERENCE', 'HORMONAL_HARMONY'],
+	D: ['NEUROVEGETATIVE_SAFETY'],
+	E: ['GLYMPHATIC_FLOW', 'MITOCHONDRIAL_INTEGRITY'],
+	F: ['CIRCADIAN_COHERENCE'],
+	G: ['NEUROVEGETATIVE_SAFETY', 'METABOLIC_QUIET'],
+	H: ['NEUROVEGETATIVE_SAFETY', 'GLYMPHATIC_FLOW']
+};
 
 export function calculateDiagnosticResult(state: DiagnosticState): DiagnosticResult {
 	const archetype = sleepArchetypes[state.selectedArchetype!];
@@ -27,12 +42,22 @@ export function calculateDiagnosticResult(state: DiagnosticState): DiagnosticRes
 	const safetyCompromised = state.safetyScore >= 3;
 	const adaptationPhase = deriveAdaptationPhase(state.safetyScore);
 
-	const scenarioId = determineScenario(saboteurDominance, safetyCompromised);
+	const scenarioId = determineScenario(saboteurDominance, safetyCompromised, externalCount + internalCount);
 	const scenario = scenarios[scenarioId];
 
 	const compromisedPillars = calculateCompromisedPillars(state);
 
 	const protocol = generateProtocol(compromisedPillars.map((cp) => cp.pillar.id));
+
+	const selectedExternalSaboteurs = state.externalSaboteurs.map((id) => {
+		const item = step2Items.find((i) => i.id === id);
+		return { id: id as ExternalSaboteurId, label: item?.label ?? id };
+	});
+
+	const selectedInternalSaboteurs = state.internalSaboteurs.map((id) => {
+		const item = step3Items.find((i) => i.id === id);
+		return { id: id as InternalSaboteurId, label: item?.label ?? id };
+	});
 
 	return {
 		archetype,
@@ -41,6 +66,8 @@ export function calculateDiagnosticResult(state: DiagnosticState): DiagnosticRes
 		saboteurDominance,
 		externalSaboteurCount: externalCount,
 		internalSaboteurCount: internalCount,
+		selectedExternalSaboteurs,
+		selectedInternalSaboteurs,
 		safetyScore: state.safetyScore,
 		safetyCompromised,
 		scenario,
@@ -83,12 +110,15 @@ function deriveAdaptationPhase(safetyScore: number): AdaptationPhaseId {
 
 function determineScenario(
 	saboteurType: SaboteurDominance,
-	safetyCompromised: boolean
+	safetyCompromised: boolean,
+	totalSaboteurs: number
 ): import('$lib/types').ScenarioId {
+	if (safetyCompromised && saboteurType === 'INTERNAL') return 'MEDICAL';
 	if (safetyCompromised) return 'NEUROENDOCRINE';
+	if (saboteurType === 'BOTH') return 'GRADUAL';
 	if (saboteurType === 'EXTERNAL') return 'LIFESTYLE';
 	if (saboteurType === 'INTERNAL') return 'MEDICAL';
-	if (saboteurType === 'BOTH') return 'GRADUAL';
+	if (totalSaboteurs > 0) return 'GRADUAL';
 	return 'LIFESTYLE';
 }
 
@@ -98,6 +128,14 @@ function calculateCompromisedPillars(
 	const pillarHits: Record<PillarId, number> = {} as Record<PillarId, number>;
 	for (const id of allPillarIds) {
 		pillarHits[id] = 0;
+	}
+
+	// Archetype seeds
+	if (state.selectedArchetype) {
+		const seeds = archetypePillarSeeds[state.selectedArchetype];
+		for (const pillarId of seeds) {
+			pillarHits[pillarId]++;
+		}
 	}
 
 	for (const sabId of state.externalSaboteurs) {

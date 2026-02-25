@@ -17,12 +17,12 @@ export interface Step1Option {
 
 export const step1Options: Step1Option[] = [
 	{ id: 'A', label: 'Adorm greu (>30 minute)' },
-	{ id: 'B', label: 'Mă trezesc între 2–4 AM' },
-	{ id: 'C', label: 'Mă trezesc prea devreme' },
-	{ id: 'D', label: 'Mă trezesc frecvent din zgomote / ușor' },
+	{ id: 'B', label: 'Mă trezesc între 2–4 AM și nu mai pot readormi' },
+	{ id: 'C', label: 'Mă trezesc cu mult înainte de alarmă (4-5 AM)' },
+	{ id: 'D', label: 'Am somnul foarte ușor — mă trezesc de la orice' },
 	{ id: 'E', label: 'Dorm dar mă trezesc obosit' },
 	{ id: 'F', label: 'Nu mi-e somn până foarte târziu' },
-	{ id: 'G', label: 'Mă trezesc cu palpitații / foame' },
+	{ id: 'G', label: 'Mă trezesc cu palpitații / transpirații / foame' },
 	{ id: 'H', label: 'Somnul meu e fragmentat constant' }
 ];
 
@@ -34,7 +34,7 @@ export const step2Items: SaboteurItem[] = [
 	{
 		id: 'CAFFEINE_LATE' satisfies ExternalSaboteurId,
 		label: 'Beau cofeină după ora 14:00',
-		pillarImpact: ['CIRCADIAN_COHERENCE', 'NEUROVEGETATIVE_SAFETY']
+		pillarImpact: ['CIRCADIAN_COHERENCE']
 	},
 	{
 		id: 'SCREENS_LATE' satisfies ExternalSaboteurId,
@@ -44,7 +44,7 @@ export const step2Items: SaboteurItem[] = [
 	{
 		id: 'NO_MORNING_LIGHT' satisfies ExternalSaboteurId,
 		label: 'Nu am lumină naturală dimineața',
-		pillarImpact: ['CIRCADIAN_COHERENCE']
+		pillarImpact: ['CIRCADIAN_COHERENCE', 'HORMONAL_HARMONY']
 	},
 	{
 		id: 'IRREGULAR_SCHEDULE' satisfies ExternalSaboteurId,
@@ -69,7 +69,17 @@ export const step2Items: SaboteurItem[] = [
 	{
 		id: 'BEDROOM_NOT_DARK' satisfies ExternalSaboteurId,
 		label: 'Dormitorul nu e complet întunecat',
-		pillarImpact: ['CIRCADIAN_COHERENCE']
+		pillarImpact: ['HORMONAL_HARMONY']
+	},
+	{
+		id: 'WARM_BEDROOM' satisfies ExternalSaboteurId,
+		label: 'Dormitorul meu e prea cald noaptea',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY']
+	},
+	{
+		id: 'LATE_EATING' satisfies ExternalSaboteurId,
+		label: 'Mănânc mult sau târziu seara (sub 2h înainte de somn)',
+		pillarImpact: ['METABOLIC_QUIET']
 	}
 ];
 
@@ -87,19 +97,19 @@ export const step3Items: SaboteurItem[] = [
 	{
 		id: 'CHRONIC_PAIN' satisfies InternalSaboteurId,
 		label: 'Am dureri cronice',
-		pillarImpact: ['NEUROVEGETATIVE_SAFETY'],
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'EMOTIONAL_CLOSURE'],
 		causalLabel: 'PAIN'
 	},
 	{
 		id: 'HISTAMINE' satisfies InternalSaboteurId,
-		label: 'Am simptome de histamină (mâncărimi, congestie, flush)',
+		label: 'Am simptome de histamină (mâncărimi, congestie, înroșirea feței)',
 		pillarImpact: ['METABOLIC_QUIET', 'GLYMPHATIC_FLOW'],
 		causalLabel: 'HISTAMINE'
 	},
 	{
 		id: 'BLOOD_SUGAR' satisfies InternalSaboteurId,
 		label: 'Am glicemie instabilă (foame, tremur, transpirații nocturne)',
-		pillarImpact: ['METABOLIC_QUIET'],
+		pillarImpact: ['METABOLIC_QUIET', 'HORMONAL_HARMONY'],
 		causalLabel: 'METABOLIC'
 	},
 	{
@@ -117,7 +127,7 @@ export const step3Items: SaboteurItem[] = [
 	{
 		id: 'NOCTURIA' satisfies InternalSaboteurId,
 		label: 'Mă trezesc frecvent pentru a urina',
-		pillarImpact: ['NEUROVEGETATIVE_SAFETY'],
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'HORMONAL_HARMONY'],
 		causalLabel: 'UROLOGICAL'
 	},
 	{
@@ -140,12 +150,12 @@ export const step4Questions: SafetyQuestion[] = [
 	},
 	{
 		id: 'S2',
-		text: 'Mintea mea nu poate „închide" ziua?',
+		text: 'Gândurile zilei mă urmăresc seara în pat?',
 		pillarImpact: ['EMOTIONAL_CLOSURE']
 	},
 	{
 		id: 'S3',
-		text: 'Am nevoie de stimulente (cofeină) ca să funcționez dimineața?',
+		text: 'Simt că energia mea a scăzut semnificativ în ultimele luni?',
 		pillarImpact: ['MITOCHONDRIAL_INTEGRITY']
 	},
 	{

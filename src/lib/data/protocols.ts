@@ -25,6 +25,7 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 	NEUROVEGETATIVE_SAFETY: {
 		remove: [
 			{ text: 'Fără știri, social media sau conținut stresant seara', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 1 },
+			{ text: 'Răcorește dormitorul la 18-20°C (aer condiționat, fereastră deschisă, ventilator)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 2 },
 			{ text: 'Elimină surse de zgomot din dormitor (sau folosește dopuri)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 3 }
 		],
 		repair: [
@@ -39,7 +40,8 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 	METABOLIC_QUIET: {
 		remove: [
 			{ text: 'Fără alcool seara (perturbă somnul profund)', pillar: 'METABOLIC_QUIET', priority: 1 },
-			{ text: 'Evită mesele grele cu 3 ore înainte de somn', pillar: 'METABOLIC_QUIET', priority: 2 }
+			{ text: 'Evită mesele grele cu 3 ore înainte de somn', pillar: 'METABOLIC_QUIET', priority: 2 },
+			{ text: 'Ultima masă consistentă cu minim 2 ore înainte de somn', pillar: 'METABOLIC_QUIET', priority: 3 }
 		],
 		repair: [
 			{ text: 'Proteină + grăsime la cină (stabilizează glicemia nocturnă)', pillar: 'METABOLIC_QUIET', priority: 1 },

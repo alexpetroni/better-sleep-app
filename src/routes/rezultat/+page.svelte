@@ -49,10 +49,13 @@
         {#snippet children()}
           <div class="grid gap-4 sm:grid-cols-3">
             <div class="rounded-lg bg-white p-4 ring-1 ring-sand-200 text-center">
-              <p class="text-2xl font-semibold text-sand-900">{diagnosticResult.externalSaboteurCount}<span class="text-sm text-sand-400">/8</span></p>
+              <p class="text-2xl font-semibold text-sand-900">{diagnosticResult.externalSaboteurCount}<span class="text-sm text-sand-400">/10</span></p>
               <p class="mt-1 text-sm text-sand-600">Sabotori externi</p>
               {#if diagnosticResult.externalSaboteurCount >= 3}
                 <span class="mt-2 inline-block rounded-full bg-warm-100 px-2 py-0.5 text-xs font-medium text-warm-800">Dominant</span>
+              {/if}
+              {#if diagnosticResult.selectedExternalSaboteurs.length > 0}
+                <p class="mt-2 text-xs text-sand-500 leading-relaxed">{diagnosticResult.selectedExternalSaboteurs.map(s => s.label).join(', ')}</p>
               {/if}
             </div>
             <div class="rounded-lg bg-white p-4 ring-1 ring-sand-200 text-center">
@@ -60,6 +63,9 @@
               <p class="mt-1 text-sm text-sand-600">Sabotori interni</p>
               {#if diagnosticResult.internalSaboteurCount >= 2}
                 <span class="mt-2 inline-block rounded-full bg-warm-100 px-2 py-0.5 text-xs font-medium text-warm-800">Dominant</span>
+              {/if}
+              {#if diagnosticResult.selectedInternalSaboteurs.length > 0}
+                <p class="mt-2 text-xs text-sand-500 leading-relaxed">{diagnosticResult.selectedInternalSaboteurs.map(s => s.label).join(', ')}</p>
               {/if}
             </div>
             <div class="rounded-lg bg-white p-4 ring-1 ring-sand-200 text-center">

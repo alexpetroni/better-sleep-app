@@ -44,7 +44,9 @@ export type ExternalSaboteurId =
 	| 'EVENING_ALCOHOL'
 	| 'NO_DAILY_MOVEMENT'
 	| 'CHILD_NOISE_WAKING'
-	| 'BEDROOM_NOT_DARK';
+	| 'BEDROOM_NOT_DARK'
+	| 'WARM_BEDROOM'
+	| 'LATE_EATING';
 
 // ═══════════════════════════════════════
 // INTERNAL SABOTEURS (Step 3)
@@ -175,6 +177,8 @@ export interface DiagnosticResult {
 	saboteurDominance: SaboteurDominance;
 	externalSaboteurCount: number;
 	internalSaboteurCount: number;
+	selectedExternalSaboteurs: { id: ExternalSaboteurId; label: string }[];
+	selectedInternalSaboteurs: { id: InternalSaboteurId; label: string }[];
 	safetyScore: number;
 	safetyCompromised: boolean;
 	scenario: Scenario;
