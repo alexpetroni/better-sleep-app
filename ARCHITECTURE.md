@@ -2,13 +2,13 @@
 
 ## Componente principale
 
-### 1. Flux Diagnostic (6 pași)
+### 1. Flux Diagnostic (7 pași)
 
-Utilizatorul parcurge secvențial 6 pași. Fiecare pas colectează date diferite:
+Utilizatorul parcurge secvențial 7 pași. Primii 6 sunt interactivi, al 7-lea e calcul automat:
 
 ```
-Pas 1 (single-select) → Pas 2 (multi-select) → Pas 3 (multi-select) → Pas 4 (multi-select) → Pas 5 (da/nu ×5) → Pas 6 (calcul automat)
-     Tipar somn              Sabotori externi        Sabotori interni       Sabotori emoționali       Siguranță biologică       Rezultat
+Pas 1 (single-select) → Pas 2 (multi-select) → Pas 3 (multi-select) → Pas 4 (multi-select) → Pas 5 (da/nu ×5) → Pas 6 (single-select ×4) → Pas 7 (calcul automat)
+     Tipar somn              Sabotori externi        Sabotori interni       Sabotori emoționali       Siguranță biologică       Profil demografic            Rezultat
 ```
 
 ### 2. Model de arhetipuri (8, mapate 1:1 cu pattern-urile)
@@ -64,7 +64,8 @@ Textele sunt în `narratives.ts`: constante narative per entitate + funcții bui
     ├─ Pas 2: ExternalSaboteurId[]
     ├─ Pas 3: InternalSaboteurId[]
     ├─ Pas 4: EmotionalSaboteurId[]
-    └─ Pas 5: Record<string, boolean> → safetyScore (0-5)
+    ├─ Pas 5: Record<string, boolean> → safetyScore (0-5)
+    └─ Pas 6: Demographics { sex, ageRange, menopauseStatus, bodyType }
     │
     ▼
 [DiagnosticState] ─── diagnosticState (writable store)
@@ -78,13 +79,14 @@ Textele sunt în `narratives.ts`: constante narative per entitate + funcții bui
     ├─ deriveAdaptationPhase() → AdaptationPhase
     ├─ determineScenario() → Scenario
     ├─ calculateCompromisedPillars() → {pillar, status}[]
-    └─ generateProtocol() → ProtocolPhase[3]
+    ├─ generateProtocol() → ProtocolPhase[3]
+    └─ personalizeProtocol(phases, demographics, saboteurs) → ProtocolPhase[3]
     │
     ▼
 [DiagnosticResult] ─── result (derived store)
     │
     ▼
-[Strat Narativ] ─── narratives.ts (builder functions)
+[Strat Narativ] ─── narratives.ts (builder functions, demographics-aware)
     │
     ▼
 [Pagina Rezultat] — 3-step progressive reveal cu text narativ
@@ -100,6 +102,7 @@ Textele sunt în `narratives.ts`: constante narative per entitate + funcții bui
 | InternalSaboteur | 12 | Factori interni/biologici |
 | EmotionalSaboteur | 4 | Factori emoționali |
 | SafetyQuestion | 5 | Evaluare siguranță biologică |
+| Demographics | 1 per user | Sex, vârstă, menopauză (condiționat), tipologie corporală |
 | AdaptationPhase | 3 | Alertă Inițială / Compensare Activă / Epuizare Adaptativă |
 | Pillar | 8 | Piloni de regenerare |
 | Scenario | 4 | Scenarii strategice |
@@ -116,6 +119,8 @@ Textele sunt în `narratives.ts`: constante narative per entitate + funcții bui
 
 - **Client-side only** — fără SSR pentru date sensibile (totul rămâne în browser)
 - **Max 5 acțiuni per fază de protocol** — pentru a nu copleși utilizatorul
-- **Diagnostic liniar** — 6 pași ficși, fără branching condiționat (spre deosebire de somn)
+- **Diagnostic liniar** — 7 pași ficși, fără branching condiționat (excepție: menopauză vizibilă doar pentru F ≥46 ani)
 - **SaboteurItem.details** — explicații expandabile ⓘ (Step 3 momentan, extensibil)
+- **SHARED action texts** — acțiuni protocol identice cross-pilon pentru deduplicare (în protocols.ts)
+- **Personalizare demografică** — textele de pe pagina rezultat se adaptează la sex/menopauză/tipologie; fluxul diagnostic rămâne generic
 - **Fără dependențe runtime externe** — zero JS libraries beyond Svelte/SvelteKit

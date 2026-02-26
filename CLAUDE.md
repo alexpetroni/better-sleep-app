@@ -2,7 +2,7 @@
 
 ## Despre proiect
 
-Aplicație web de diagnostic al somnului în 6 pași, care identifică tiparul de somn al utilizatorului, sabotorii externi, interni și emoționali, evaluează siguranța biologică și generează un protocol personalizat în 3 faze.
+Aplicație web de diagnostic al somnului în 7 pași, care identifică tiparul de somn al utilizatorului, sabotorii externi, interni și emoționali, evaluează siguranța biologică, colectează un profil demografic și generează un protocol personalizat în 3 faze.
 
 Spin-off al proiectului `somn` (~/work/somn) — trece de la arhetipuri emoționale la un model clinic structurat.
 
@@ -21,24 +21,24 @@ Mesajul central: *"Nu ai insomnie. Ai un deficit de siguranță biologică."*
 
 ```
 src/
-  app.css              — Tailwind imports + tema custom (sand/night/warm)
+  app.css              — Tailwind imports + tema custom (sand/night/warm) + .btn-primary
   app.html             — Shell HTML (lang="ro")
   lib/
     types/index.ts     — Toate definițiile de tipuri TypeScript
     data/
       archetypes.ts    — 8 arhetipuri de somn (1:1 cu pattern-urile)
-      steps.ts         — Opțiuni/items pentru fiecare pas (1-5)
+      steps.ts         — Opțiuni/items pentru fiecare pas (1-6) + opțiuni demografice
       pillars.ts       — 8 piloni de regenerare
       protocols.ts     — Acțiuni protocol per pilon per fază
-      scoring.ts       — Motor de calcul: pași 1-4 → rezultat final
-      narratives.ts    — Texte narative + builder functions pentru pagina rezultat
+      scoring.ts       — Motor de calcul: pași 1-5 → rezultat final + personalizeProtocol()
+      narratives.ts    — Texte narative + builder functions (demographics-aware) pentru pagina rezultat
     stores/
       diagnostic.ts    — State management (Svelte writable + derived stores)
     components/        — Componente Svelte 5 reutilizabile
   routes/
     +layout.svelte     — Layout global
     +page.svelte       — Landing page
-    diagnostic/        — Fluxul diagnostic în 6 pași
+    diagnostic/        — Fluxul diagnostic în 7 pași (6 interactivi + calcul)
     rezultat/          — Pagina de rezultat personalizat
 ```
 
@@ -79,5 +79,5 @@ src/
 - **Nu atinge `!initialData/`** — director read-only cu documente de referință
 - **ID-urile de pași/arhetipuri/piloni sunt sacre** — sunt referențiate cross-file
 - **După modificări:** rulează `npm run build` pentru verificare
-- **Componente din somn** (`QuestionCard`, `OptionButton`, `CheckboxOption`, `ResultSection`) — nu le modifica fără discuție
+- **Componente de bază** (`QuestionCard`, `OptionButton`, `CheckboxOption`) — stilizate pentru proiect; modificări cu atenție
 - **La adăugarea de tipuri noi:** actualizează `src/lib/types/index.ts` mai întâi

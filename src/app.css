@@ -5,8 +5,8 @@
   --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
   --color-sand-50: #faf8f5;
-  --color-sand-100: #f0ece5;
-  --color-sand-200: #e2dacf;
+  --color-sand-100: #f2ede6;
+  --color-sand-200: #e4dbd0;
   --color-sand-300: #cfc3b0;
   --color-sand-400: #b5a48e;
   --color-sand-500: #9a856f;
@@ -15,16 +15,16 @@
   --color-sand-800: #3f352c;
   --color-sand-900: #2a231d;
 
-  --color-night-50: #f0f3f8;
-  --color-night-100: #d9e0ed;
-  --color-night-200: #b3c1db;
-  --color-night-300: #8da2c9;
-  --color-night-400: #6783b7;
-  --color-night-500: #4a6a9e;
-  --color-night-600: #3b5580;
-  --color-night-700: #2d4062;
-  --color-night-800: #1e2c44;
-  --color-night-900: #111929;
+  --color-night-50: #f2f1f8;
+  --color-night-100: #dddbed;
+  --color-night-200: #bbb7db;
+  --color-night-300: #9892c4;
+  --color-night-400: #7570ad;
+  --color-night-500: #5a5594;
+  --color-night-600: #464278;
+  --color-night-700: #33305c;
+  --color-night-800: #211f40;
+  --color-night-900: #121127;
 
   --color-warm-50: #fef9f3;
   --color-warm-100: #fceee0;
@@ -50,5 +50,50 @@
   h1, h2, h3, h4 {
     font-family: var(--font-serif);
     line-height: 1.3;
+  }
+
+  ::selection {
+    background-color: var(--color-night-200);
+    color: var(--color-night-900);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    display: block;
+    width: 100%;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.5rem;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--color-night-600), var(--color-night-700));
+    box-shadow:
+      0 1px 3px 0 rgb(0 0 0 / 0.1),
+      0 1px 2px -1px rgb(0 0 0 / 0.1),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.08);
+    transition: all 0.2s ease;
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--color-night-500), var(--color-night-600));
+    box-shadow:
+      0 4px 12px -2px rgb(0 0 0 / 0.15),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.08);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  .btn-primary:focus-visible {
+    outline: 2px solid var(--color-night-500);
+    outline-offset: 2px;
+  }
+  .btn-primary:disabled {
+    background: var(--color-sand-200);
+    color: var(--color-sand-400);
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
   }
 }

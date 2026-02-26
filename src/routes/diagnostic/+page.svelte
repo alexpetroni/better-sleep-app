@@ -155,21 +155,24 @@
   });
 </script>
 
-<div class="min-h-screen bg-sand-50 px-4 py-8 sm:py-12">
+<div class="relative min-h-screen bg-sand-50 px-4 py-8 sm:py-12">
+  <!-- Subtle background accent -->
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-night-50/30 to-transparent" aria-hidden="true"></div>
+
   <!-- Step Indicator -->
-  <div class="mb-10">
+  <div class="relative mb-10">
     <StepIndicator currentStep={$currentStep} />
   </div>
 
   <!-- Step Content -->
   <div
-    class="transition-all duration-300 ease-in-out {visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}"
+    class="relative transition-all duration-300 ease-in-out {visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}"
   >
     <!-- STEP 1: Sleep Pattern -->
     {#if $currentStep === 1}
       <QuestionCard text={stepMeta[0].subtitle} subtext="Alege cea care te descrie cel mai bine.">
         {#snippet children()}
-          <div class="space-y-3" role="radiogroup" aria-label="Tipare de somn">
+          <div class="space-y-2.5" role="radiogroup" aria-label="Tipare de somn">
             {#each step1Options as option}
               <OptionButton
                 label={option.label}
@@ -188,7 +191,7 @@
           <div class="space-y-4">
             <fieldset>
               <legend class="sr-only">Sabotori externi</legend>
-              <div class="space-y-3">
+              <div class="space-y-1">
                 {#each step2Items as item}
                   <CheckboxOption
                     label={item.label}
@@ -198,11 +201,7 @@
                 {/each}
               </div>
             </fieldset>
-            <button
-              type="button"
-              class="mt-6 w-full rounded-md bg-night-600 px-4 py-3 text-base font-semibold text-white shadow-xs hover:bg-night-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-night-600 transition-colors"
-              onclick={handleStep2Submit}
-            >
+            <button type="button" class="btn-primary mt-6" onclick={handleStep2Submit}>
               Continuă
             </button>
           </div>
@@ -216,10 +215,10 @@
           <div class="space-y-4">
             <fieldset>
               <legend class="sr-only">Sabotori interni</legend>
-              <div class="space-y-3">
+              <div class="space-y-1">
                 {#each step3Items as item}
                   <div>
-                    <div class="flex items-start gap-2">
+                    <div class="flex items-start gap-1.5">
                       <div class="flex-1">
                         <CheckboxOption
                           label={item.label}
@@ -230,29 +229,27 @@
                       {#if item.details}
                         <button
                           type="button"
-                          class="mt-0.5 shrink-0 text-sand-400 hover:text-night-600 transition-colors"
+                          class="mt-2.5 shrink-0 flex size-6 items-center justify-center rounded-full text-sand-400 transition-colors hover:bg-night-50 hover:text-night-600"
                           onclick={() => toggleStep3Info(item.id)}
                           aria-label="Mai multe detalii"
                           aria-expanded={step3ExpandedInfo === item.id}
                         >
-                          <span class="text-base leading-none">ⓘ</span>
+                          <svg class="size-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+                          </svg>
                         </button>
                       {/if}
                     </div>
                     {#if step3ExpandedInfo === item.id && item.details}
-                      <p class="ml-6 mt-1 text-xs leading-relaxed text-sand-500 bg-sand-50 rounded px-3 py-2">
-                        {item.details}
-                      </p>
+                      <div class="ml-9 mt-1 rounded-lg border border-night-100 bg-night-50/50 px-3.5 py-2.5">
+                        <p class="text-xs leading-relaxed text-night-700">{item.details}</p>
+                      </div>
                     {/if}
                   </div>
                 {/each}
               </div>
             </fieldset>
-            <button
-              type="button"
-              class="mt-6 w-full rounded-md bg-night-600 px-4 py-3 text-base font-semibold text-white shadow-xs hover:bg-night-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-night-600 transition-colors"
-              onclick={handleStep3Submit}
-            >
+            <button type="button" class="btn-primary mt-6" onclick={handleStep3Submit}>
               Continuă
             </button>
           </div>
@@ -266,7 +263,7 @@
           <div class="space-y-4">
             <fieldset>
               <legend class="sr-only">Sabotori emoționali</legend>
-              <div class="space-y-3">
+              <div class="space-y-1">
                 {#each step4Items as item}
                   <CheckboxOption
                     label={item.label}
@@ -276,11 +273,7 @@
                 {/each}
               </div>
             </fieldset>
-            <button
-              type="button"
-              class="mt-6 w-full rounded-md bg-night-600 px-4 py-3 text-base font-semibold text-white shadow-xs hover:bg-night-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-night-600 transition-colors"
-              onclick={handleStep4Submit}
-            >
+            <button type="button" class="btn-primary mt-6" onclick={handleStep4Submit}>
               Continuă
             </button>
           </div>
@@ -303,10 +296,7 @@
             </div>
             <button
               type="button"
-              class="mt-6 w-full rounded-md px-4 py-3 text-base font-semibold shadow-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-night-600
-                {allStep5Answered
-                  ? 'bg-night-600 text-white hover:bg-night-500'
-                  : 'bg-sand-200 text-sand-400 cursor-not-allowed'}"
+              class="btn-primary mt-6"
               disabled={!allStep5Answered}
               onclick={handleStep5Submit}
             >
@@ -323,7 +313,7 @@
           <div class="space-y-6">
             <!-- Sex -->
             <fieldset>
-              <legend class="text-sm font-medium text-sand-700 mb-2">Sex</legend>
+              <legend class="text-sm font-semibold text-sand-700 mb-2.5">Sex</legend>
               <div class="space-y-2">
                 {#each sexOptions as option}
                   <OptionButton
@@ -337,7 +327,7 @@
 
             <!-- Age range -->
             <fieldset>
-              <legend class="text-sm font-medium text-sand-700 mb-2">Vârstă</legend>
+              <legend class="text-sm font-semibold text-sand-700 mb-2.5">Vârstă</legend>
               <div class="space-y-2">
                 {#each ageRangeOptions as option}
                   <OptionButton
@@ -352,7 +342,7 @@
             <!-- Menopause (conditional) -->
             {#if showMenopause}
               <fieldset>
-                <legend class="text-sm font-medium text-sand-700 mb-2">Status menopauză</legend>
+                <legend class="text-sm font-semibold text-sand-700 mb-2.5">Status menopauză</legend>
                 <div class="space-y-2">
                   {#each menopauseOptions as option}
                     <OptionButton
@@ -367,7 +357,7 @@
 
             <!-- Body type -->
             <fieldset>
-              <legend class="text-sm font-medium text-sand-700 mb-2">Tipologie corporală</legend>
+              <legend class="text-sm font-semibold text-sand-700 mb-2.5">Tipologie corporală</legend>
               <div class="space-y-2">
                 {#each bodyTypeOptions as option}
                   <OptionButton
@@ -381,10 +371,7 @@
 
             <button
               type="button"
-              class="mt-6 w-full rounded-md px-4 py-3 text-base font-semibold shadow-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-night-600
-                {allStep6Answered
-                  ? 'bg-night-600 text-white hover:bg-night-500'
-                  : 'bg-sand-200 text-sand-400 cursor-not-allowed'}"
+              class="btn-primary mt-6"
               disabled={!allStep6Answered}
               onclick={handleStep6Submit}
             >
@@ -398,13 +385,16 @@
 
   <!-- Back Button -->
   {#if $currentStep > 1}
-    <div class="mx-auto mt-6 max-w-2xl text-center">
+    <div class="relative mx-auto mt-6 max-w-2xl text-center">
       <button
         type="button"
-        class="text-sm font-medium text-sand-500 hover:text-sand-700 transition-colors"
+        class="inline-flex items-center gap-1.5 text-sm font-medium text-sand-500 transition-colors hover:text-sand-700"
         onclick={handleBack}
       >
-        &larr; Înapoi
+        <svg class="size-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd" />
+        </svg>
+        Înapoi
       </button>
     </div>
   {/if}

@@ -50,3 +50,23 @@ Simptomele din Step 3 pot fi neclare — utilizatorul nu înțelege de ce contea
 
 ## [2026-02-25] Pagina rezultat: de la raport medical la narativ progresiv în 3 pași
 Pagina de rezultat afișa totul simultan — arhetip, sabotori, cauze, piloni, protocol — folosind componente card (ResultSection, PillarCard, ProtocolPhase). Arăta ca un raport medical, nu ca o conversație. Am rescris-o complet: 3 pași progresivi navigați cu buton "Continuă", text narativ cald (ton de medic funcțional, persoana a II-a), fără carduri sau grile. Componentele vechi (ResultSection, PillarCard, ProtocolPhase) rămân în codebase dar nu mai sunt folosite pe pagina de rezultat. Noul strat de date (`narratives.ts`) conține constante narative per entitate și funcții builder care construiesc textul adaptiv (ex: `buildCausesNarrative` produce text diferit pentru 0, 1 sau 2+ cauze). Tranziție animată identică cu pagina de diagnostic.
+
+## [2026-02-26] Pas demografic (Step 6) — personalizare texte pe baza sexului, vârstei și menopauzei
+
+Textele din protocol și narratives tratau toți utilizatorii identic. Referințe la "progesteron", "ciclu neregulat", "La femei" erau irelevante pentru bărbați sau femei la postmenopauză. Am adăugat Step 6 (Profil) între siguranță biologică și rezultat: sex, vârstă, menopauză (condiționat: F ≥ 46 ani), tipologie corporală. Personalizarea se aplică doar pe pagina de rezultat (narratives + protocol), nu în fluxul diagnostic — Step 3 rămâne generic la prima parcurgere, fiindcă datele demografice nu sunt încă disponibile.
+
+## [2026-02-26] Ton narativ: medic funcțional care explică unui prieten
+
+Textele de pe pagina de rezultat erau fie prea clinice, fie prea scurte. Le-am rescris complet cu un ton specific: medic funcțional de top, empatic, care explică metodic unui prieten inteligent. Fără prima persoană din perspectiva doctorului, fără jargon neexplicat. Termenii medicali sunt folosiți și explicați inline ("cortizolul — hormonul de stres"). Fiecare secțiune are un header care orientează utilizatorul ("Ce se întâmplă cu somnul tău" / "De ce se întâmplă" / "Ce poți face").
+
+## [2026-02-26] Deduplicare acțiuni protocol via SHARED constants
+
+Acțiuni identice ca sens (ex: "fără alcool seara") apăreau cu formulări diferite în piloni diferiți. La afișare, deduplicarea nu le prindea fiindcă textele difereau. Am creat un obiect `SHARED` în protocols.ts cu textele canonice (alcool, ecrane, mișcare, hidratare, omega-3) — aceeași referință de string în piloni diferiți, deduplicarea existentă le elimină natural.
+
+## [2026-02-26] Paletă night-* schimbată din gri-albastru în indigo cald
+
+Landing page-ul arăta "prea gri" — paleta night-* originală (grey-blue: #1e2c44, #3b5580) dădea o senzație rece și plată. Am mutat tot spectrul night-* spre indigo/violet cald (#211f40, #464278, #5a5594). Toate paginile beneficiază automat fiindcă folosesc tokenii night-*.
+
+## [2026-02-26] Componente din somn — acum stilizate independent
+
+Componentele copiate din proiectul somn (QuestionCard, OptionButton, CheckboxOption) au fost restilizate pentru better-sleep-app: accent lines, radio indicators, full-row clickable labels, hover shadows. Nu mai sunt copii verbatim — regula "nu le modifica fără discuție" e înlocuită cu "modificări cu atenție".

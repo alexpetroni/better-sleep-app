@@ -2,20 +2,22 @@
 
 ## Today
 
-- [x] Pagina rezultat: rescriere completă — 3-step progressive reveal cu text narativ
-- [x] Creat `narratives.ts` — texte narative per arhetip, cauze, adaptare, scenariu, protocol
-- [x] Adăugat tipuri `ArchetypeNarrative` + `CausalLabelFragment`
-- [x] Builder functions: `buildCausesNarrative`, `buildPillarsNarrative`, `buildProtocolPhaseNarrative`
+- [x] Pas demografic (Step 6): tipuri, store, scoring, UI, narratives
+- [x] Rescriere completă texte rezultat — ton cald, medic funcțional
+- [x] Deduplicare acțiuni protocol — SHARED constants cross-pilon
+- [x] Redesign pagini — landing, diagnostic, rezultat, componente
+- [x] Paletă night-* schimbată din gri-albastru în indigo cald
+- [x] Actualizare documentație proiect
 
 ## Next
 
-- [ ] Testare manuală end-to-end (toate combinațiile de pași, inclusiv Step 4 emoțional)
-- [ ] Testare narativ: 0 cauze / 1 cauză / 3+ cauze, EMOTIONAL dominance, toate arhetipurile
-- [ ] Back button pe pagina rezultat (step 2 → 1, step 3 → 2)
+- [ ] Testare manuală end-to-end (toate combinațiile, inclusiv demografice: M/F/UNSPEC × vârstă × menopauză)
+- [ ] Testare narativ: 0 cauze / 1 cauză / 3+ cauze, EMOTIONAL dominance, toate arhetipurile × demografice
+- [ ] Verificare StepIndicator pe mobil cu 6 dots
 - [ ] Sleep Regeneration Score™ — placeholder vizual pe pagina rezultat
 - [ ] CTA email capture pe pagina rezultat
-- [ ] Polish responsive design (testare mobilă completă)
-- [ ] Accesibilitate: ARIA labels, focus states, semantic HTML
+- [ ] Polish responsive (testare mobilă completă, inclusiv step 6 cu 4 fieldsets)
+- [ ] Accesibilitate: ARIA labels, focus management, keyboard nav pe rezultat steps
 
 ## Backlog
 
@@ -28,6 +30,20 @@
 - [ ] Variante de limbă (engleză)
 - [ ] Export PDF al rezultatului
 - [ ] Integrare cu dispozitive de somn (wearables)
+
+## Done (2026-02-26)
+
+- [x] Implementat Step 6 — colectare profil demografic (sex, vârstă, menopauză condiționată, tipologie corporală)
+- [x] Tipuri noi: `BiologicalSex`, `AgeRange`, `MenopauseStatus`, `BodyType`, `Demographics`
+- [x] `DiagnosticStep` extins la 7; store actualizat cu `submitDemographics()`
+- [x] `personalizeProtocol()` în scoring — HORMONAL_HARMONY adapt text, RESPIRATORY_STABILITY + greutate
+- [x] Narratives demographics-aware: `getArchetypeMechanism()`, `getHormonalFragment()`, `buildCausesNarrative()` cu demographics
+- [x] Rescriere completă texte rezultat — ton cald, medic funcțional, fără jargon neexplicat
+- [x] Deduplicare acțiuni protocol — `SHARED` constants în protocols.ts (alcool, ecrane, mișcare, hidratare, omega-3)
+- [x] Redesign complet: landing (night-900 + ambient glows), diagnostic (bg accent, .btn-primary), rezultat (dark hero headers, protocol cards)
+- [x] Paletă night-* → indigo cald (de la gri-albastru rece)
+- [x] `.btn-primary` în app.css @layer components
+- [x] Componente restilizate: StepIndicator (progress bar), QuestionCard (accent line), OptionButton (radio indicator), CheckboxOption (full-row label), YesNoQuestion
 
 ## Done (2026-02-25 — sesiunea 2)
 
