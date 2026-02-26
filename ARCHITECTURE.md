@@ -4,12 +4,22 @@
 
 ### 1. Flux Diagnostic (7 pași)
 
-Utilizatorul parcurge secvențial 7 pași. Primii 6 sunt interactivi, al 7-lea e calcul automat:
+Utilizatorul parcurge secvențial 7 pași. Primii 6 sunt interactivi, al 7-lea e calcul automat.
+Logo-ul "Better Sleep" e vizibil pe tot parcursul (diagnostic + rezultat), clickabil spre landing.
 
 ```
-Pas 1 (single-select) → Pas 2 (multi-select) → Pas 3 (multi-select) → Pas 4 (multi-select) → Pas 5 (da/nu ×5) → Pas 6 (single-select ×4) → Pas 7 (calcul automat)
-     Tipar somn              Sabotori externi        Sabotori interni       Sabotori emoționali       Siguranță biologică       Profil demografic            Rezultat
+Pas 1 (3×single-select) → Pas 2 (multi-select) → Pas 3 (multi-select) → Pas 4 (multi-select) → Pas 5 (da/nu ×5) → Pas 6 (single-select ×4) → Pas 7 (calcul automat)
+     Onset + Menținere        Sabotori externi        Sabotori interni       Sabotori emoționali       Siguranță biologică       Profil demografic            Rezultat
+     + Stare dimineață
 ```
+
+#### Pas 1 — Reveal progresiv în 3 sub-întrebări
+- **Partea A** — "Cum adormi?" (onset): ONSET_NORMAL / A / F
+- **Partea B** — "Ce se întâmplă pe parcursul nopții?" (maintenance): MAINTENANCE_NORMAL / B / C / D / G / H
+- **Partea C** — "Cum te simți dimineața?" (morning): MORNING_OK / CALM_TIRED / TENSE_TIRED / FOGGY_HEAVY / IRRITABLE_EMPTY / ALERT_WIRED
+
+Derivare arhetip: maintenance ≠ NORMAL → primar = maintenance; altfel onset ≠ NORMAL → primar = onset; ambele NORMAL → primar = E.
+Când onset e problematic ȘI maintenance e problematic → maintenance = primar, onset = secundar (contribuie pillar seeds + fragment narativ).
 
 ### 2. Model de arhetipuri (8, mapate 1:1 cu pattern-urile)
 
@@ -29,7 +39,7 @@ Cauzele mai profunde (hormonal, metabolic, histamină, respirator, etc.) NU sunt
 ### 3. Motor de Scoring
 
 Scoring **categoric** (nu aditiv). Fiecare pas produce o clasificare discretă:
-- Pas 1 → SleepArchetypeId (mapare directă 1:1, fără rafinare)
+- Pas 1 → deriveArchetypesFromStep1(onset, maintenance) → {primary: SleepArchetypeId, secondary: SleepArchetypeId | null}
 - Pas 2 → extern dominant dacă ≥3/19 selectate
 - Pas 3 → intern dominant dacă ≥2/12 selectate + etichete cauzale
 - Pas 4 → emoțional dominant dacă ≥2/4 selectate + etichetă cauzală EMOTIONAL
@@ -48,10 +58,12 @@ Acțiunile sunt selectate din pool-uri per pilon, prioritizate, deduplicate.
 
 ### 6. Strat Narativ (Pagina Rezultat)
 
-Pagina de rezultat prezintă informația progresiv, în 3 pași, cu text narativ cald (ton de medic funcțional):
-- **Pas 1 — Tiparul tău de somn**: arhetip, recognition, mecanism biologic, cauze
-- **Pas 2 — Analiza ta**: faza de adaptare, scenariu, notă emoțională (opțional), piloni
-- **Pas 3 — Protocolul personalizat**: 3 sub-secțiuni narative cu acțiunile integrate
+Pagina de rezultat prezintă informația progresiv, în 3 pași, cu text narativ cald (ton de medic funcțional).
+Stilistic identică cu pagina de diagnostic (card alb, sand-50, progress bar cu dots).
+Step indicator cu 3 pași clickabili. Dacă există arhetip secundar (onset), se afișează un fragment narativ suplimentar.
+- **Pas 1 — Ce se întâmplă**: arhetip, onset fragment (opțional), recognition, mecanism biologic, cauze
+- **Pas 2 — De ce**: faza de adaptare, scenariu, notă emoțională (opțional), piloni
+- **Pas 3 — Ce poți face**: 3 sub-secțiuni narative cu acțiunile integrate
 
 Textele sunt în `narratives.ts`: constante narative per entitate + funcții builder (`buildCausesNarrative`, `buildPillarsNarrative`, `buildProtocolPhaseNarrative`) care adaptează narativul la combinația concretă a utilizatorului.
 
@@ -60,7 +72,8 @@ Textele sunt în `narratives.ts`: constante narative per entitate + funcții bui
 ```
 [Input utilizator]
     │
-    ├─ Pas 1: SleepArchetypeId ('A'-'H')
+    ├─ Pas 1: OnsetAnswerId + MaintenanceAnswerId + MorningStateId
+    │         → deriveArchetypesFromStep1() → primary + secondary archetype
     ├─ Pas 2: ExternalSaboteurId[]
     ├─ Pas 3: InternalSaboteurId[]
     ├─ Pas 4: EmotionalSaboteurId[]
@@ -73,7 +86,7 @@ Textele sunt în `narratives.ts`: constante narative per entitate + funcții bui
     ▼
 [calculateDiagnosticResult(state)]
     │
-    ├─ resolveArchetype() → SleepArchetype
+    ├─ deriveArchetypesFromStep1() → primary + secondary SleepArchetype
     ├─ deriveCausalLabels() → CausalLabel[]
     ├─ classifySaboteurDominance() → EXTERNAL/INTERNAL/EMOTIONAL/MIXED/NONE
     ├─ deriveAdaptationPhase() → AdaptationPhase
@@ -109,6 +122,7 @@ Textele sunt în `narratives.ts`: constante narative per entitate + funcții bui
 | ProtocolPhase | 3 | Faze protocol (Remove/Repair/Regulate) |
 | ArchetypeNarrative | 8 | Texte recognition + mechanism per arhetip |
 | CausalLabelFragment | 11 | Fraze inline integrale în narativ per etichetă cauzală |
+| OnsetFragment | 2 (A, F) | Texte scurte pentru onset ca arhetip secundar |
 
 ## Servicii externe
 

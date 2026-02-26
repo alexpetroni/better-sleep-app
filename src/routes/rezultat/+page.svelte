@@ -5,6 +5,8 @@
   import type { DiagnosticResult } from '$lib/types';
   import {
     archetypeNarratives,
+    morningStateFragments,
+    onsetFragments,
     getArchetypeMechanism,
     buildCausesNarrative,
     adaptationNarratives,
@@ -51,11 +53,20 @@
     goto('/diagnostic');
   }
 
-  const phaseIcons = ['M3 3v18h18', 'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5', 'M13 2L3 14h9l-1 8 10-12h-9l1-8z'];
+  const resultSteps: { id: 1 | 2 | 3; title: string; subtitle: string }[] = [
+    { id: 1, title: 'Ce se întâmplă', subtitle: 'Tiparul tău' },
+    { id: 2, title: 'De ce', subtitle: 'Cauze și fază' },
+    { id: 3, title: 'Ce poți face', subtitle: 'Protocol' }
+  ];
+
   const phaseColors = ['from-warm-500 to-warm-600', 'from-night-500 to-night-600', 'from-night-700 to-night-800'];
 
   let narrative = $derived(diagnosticResult ? {
     recognition: archetypeNarratives[diagnosticResult.archetype.id].recognition,
+    onsetFragment: diagnosticResult.secondaryArchetype
+      ? onsetFragments[diagnosticResult.secondaryArchetype.id as 'A' | 'F']
+      : null,
+    morningState: morningStateFragments[diagnosticResult.morningState],
     mechanism: getArchetypeMechanism(diagnosticResult.archetype.id, diagnosticResult.demographics),
     causes: buildCausesNarrative(diagnosticResult.causalLabels, diagnosticResult.demographics),
     adaptation: adaptationNarratives[diagnosticResult.adaptationPhase.id],
@@ -66,171 +77,203 @@
 </script>
 
 {#if diagnosticResult && narrative}
-  <div class="min-h-screen bg-sand-50">
+  <div class="relative min-h-screen bg-sand-50 px-4 py-8 sm:py-12">
+    <!-- Subtle background accent (same as diagnostic) -->
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-night-50/30 to-transparent" aria-hidden="true"></div>
+
+    <!-- Logo -->
+    <div class="relative mb-6 text-center">
+      <a href="/" class="inline-block font-serif text-xl font-semibold text-night-700 transition-colors hover:text-night-900">
+        Better Sleep
+      </a>
+    </div>
+
+    <!-- Result Step Indicator (matches diagnostic StepIndicator style) -->
+    <nav aria-label="Progres rezultat" class="relative mx-auto mb-10 max-w-2xl">
+      <!-- Progress bar -->
+      <div class="relative mb-4">
+        <div class="h-1 rounded-full bg-sand-200">
+          <div
+            class="h-1 rounded-full bg-gradient-to-r from-night-500 to-night-600 transition-all duration-500 ease-out"
+            style="width: {((resultStep - 1) / 2) * 100}%"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Step dots + labels -->
+      <ol role="list" class="flex items-start justify-between">
+        {#each resultSteps as step, i}
+          {@const status = step.id < resultStep ? 'complete' : step.id === resultStep ? 'current' : 'upcoming'}
+          <li class="flex flex-col items-center gap-1.5">
+            <button
+              type="button"
+              class="flex flex-col items-center gap-1.5 transition-all duration-200"
+              onclick={() => goToStep(step.id)}
+            >
+              <span
+                class="flex size-7 items-center justify-center rounded-full text-xs font-semibold transition-all duration-300
+                  {status === 'complete' ? 'bg-night-600 text-white shadow-sm' :
+                   status === 'current' ? 'border-2 border-night-600 text-night-700 shadow-sm shadow-night-200' :
+                   'border border-sand-300 text-sand-400'}"
+              >
+                {#if status === 'complete'}
+                  <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                {:else}
+                  {step.id}
+                {/if}
+              </span>
+              <span class="text-[11px] {status === 'upcoming' ? 'text-sand-400' : status === 'current' ? 'font-semibold text-night-700' : 'font-medium text-sand-600'}">
+                {step.title}
+              </span>
+              <span class="hidden text-[10px] sm:block {status === 'current' ? 'text-sand-500' : 'text-sand-400'}">
+                {step.subtitle}
+              </span>
+            </button>
+          </li>
+          {#if i < resultSteps.length - 1}
+            <div class="mb-8 sm:mb-10 mx-0.5 h-px flex-1" aria-hidden="true"></div>
+          {/if}
+        {/each}
+      </ol>
+    </nav>
+
+    <!-- Step Content -->
     <div
-      class="transition-all duration-300 ease-in-out {visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}"
+      class="relative transition-all duration-300 ease-in-out {visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}"
     >
 
       <!-- STEP 1: Ce se întâmplă -->
       {#if resultStep === 1}
-        <!-- Dark hero header -->
-        <div class="relative overflow-hidden bg-night-900 px-4 pb-14 pt-12 sm:pb-20 sm:pt-16">
-          <div class="absolute inset-0" aria-hidden="true">
-            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--color-night-700)_0%,_transparent_60%)] opacity-60"></div>
-            <div class="absolute bottom-0 left-1/3 h-40 w-80 rounded-full bg-warm-500/5 blur-[80px]"></div>
-          </div>
-          <div class="relative mx-auto max-w-2xl">
-            <!-- Breadcrumb -->
-            <div class="mb-8 flex items-center gap-2 text-sm">
-              <span class="rounded-full bg-white/15 px-3 py-0.5 text-xs font-semibold text-night-200">1 din 3</span>
-              <span class="font-medium text-night-300">Ce se întâmplă cu somnul tău</span>
-            </div>
+        <div class="mx-auto max-w-2xl">
+          <div class="relative overflow-hidden rounded-2xl bg-white px-6 py-8 shadow-md shadow-sand-200/60 ring-1 ring-sand-200/80 sm:px-10 sm:py-10">
+            <!-- Top accent line -->
+            <div class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-night-500/60 via-night-400/80 to-night-500/60"></div>
 
-            <h1 class="font-serif text-4xl font-semibold text-white sm:text-5xl">
+            <!-- Title -->
+            <h1 class="font-serif text-2xl font-medium text-sand-900 sm:text-3xl">
               {diagnosticResult.archetype.name}
             </h1>
-            <p class="mt-3 font-serif text-lg italic text-night-200/90">
+            <p class="mt-2 font-serif text-base italic text-sand-500">
               „{diagnosticResult.archetype.keyPhrase}"
             </p>
-          </div>
-        </div>
 
-        <!-- Content -->
-        <div class="mx-auto max-w-2xl px-4 py-10 sm:py-14">
-          <div class="space-y-6">
-            <p class="text-base leading-relaxed text-sand-700">{narrative.recognition}</p>
+            <!-- Content -->
+            <div class="mt-8 space-y-5">
+              <p class="text-[15px] leading-relaxed text-sand-700">{narrative.recognition}</p>
 
-            <div class="rounded-xl border border-night-100 bg-night-50/50 px-5 py-5 sm:px-6">
-              <p class="mb-2.5 text-xs font-bold uppercase tracking-wider text-night-500">Ce se întâmplă biologic</p>
-              <p class="text-[15px] leading-relaxed text-night-800">{narrative.mechanism}</p>
+              {#if narrative.onsetFragment}
+                <p class="text-[15px] leading-relaxed text-sand-700">{narrative.onsetFragment}</p>
+              {/if}
+
+              <p class="text-[15px] leading-relaxed text-sand-700">{narrative.morningState}</p>
+
+              <div class="rounded-xl border border-night-100 bg-night-50/40 px-5 py-4">
+                <p class="mb-2 text-xs font-bold uppercase tracking-wider text-night-500">Ce se întâmplă biologic</p>
+                <p class="text-[15px] leading-relaxed text-night-800">{narrative.mechanism}</p>
+              </div>
+
+              <p class="text-[15px] leading-relaxed text-sand-700">{narrative.causes}</p>
+
+              <button type="button" class="btn-primary mt-4" onclick={() => goToStep(2)}>
+                Continuă
+              </button>
             </div>
-
-            <p class="text-base leading-relaxed text-sand-700">{narrative.causes}</p>
-
-            <button type="button" class="btn-primary mt-4" onclick={() => goToStep(2)}>
-              Continuă — De ce se întâmplă
-            </button>
           </div>
         </div>
 
       <!-- STEP 2: De ce se întâmplă -->
       {:else if resultStep === 2}
-        <!-- Dark hero header -->
-        <div class="relative overflow-hidden bg-night-900 px-4 pb-14 pt-12 sm:pb-20 sm:pt-16">
-          <div class="absolute inset-0" aria-hidden="true">
-            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--color-night-700)_0%,_transparent_60%)] opacity-60"></div>
-            <div class="absolute bottom-0 left-1/3 h-40 w-80 rounded-full bg-warm-500/5 blur-[80px]"></div>
-          </div>
-          <div class="relative mx-auto max-w-2xl">
-            <div class="mb-8 flex items-center gap-2 text-sm">
-              <span class="rounded-full bg-white/15 px-3 py-0.5 text-xs font-semibold text-night-200">2 din 3</span>
-              <span class="font-medium text-night-300">De ce se întâmplă</span>
-            </div>
+        <div class="mx-auto max-w-2xl">
+          <div class="relative overflow-hidden rounded-2xl bg-white px-6 py-8 shadow-md shadow-sand-200/60 ring-1 ring-sand-200/80 sm:px-10 sm:py-10">
+            <div class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-night-500/60 via-night-400/80 to-night-500/60"></div>
 
-            <h2 class="font-serif text-3xl font-semibold text-white sm:text-4xl">
+            <h2 class="font-serif text-2xl font-medium text-sand-900 sm:text-3xl">
               {diagnosticResult.adaptationPhase.name}
             </h2>
-            <p class="mt-2 text-base text-night-300">Faza de adaptare în care se află corpul tău</p>
-          </div>
-        </div>
+            <p class="mt-2 text-sm text-sand-500">Faza de adaptare în care se află corpul tău</p>
 
-        <!-- Content -->
-        <div class="mx-auto max-w-2xl px-4 py-10 sm:py-14">
-          <div class="space-y-6">
-            <p class="text-base leading-relaxed text-sand-700">{narrative.adaptation}</p>
+            <div class="mt-8 space-y-5">
+              <p class="text-[15px] leading-relaxed text-sand-700">{narrative.adaptation}</p>
 
-            <div class="rounded-xl border border-warm-200/60 bg-warm-50/50 px-5 py-5 sm:px-6">
-              <p class="mb-2.5 text-xs font-bold uppercase tracking-wider text-warm-600">Tipul de abordare recomandat</p>
-              <p class="text-[15px] leading-relaxed text-sand-800">{narrative.scenario}</p>
-            </div>
-
-            {#if diagnosticResult.saboteurDominance === 'EMOTIONAL'}
-              <div class="rounded-xl border-l-4 border-l-warm-400 bg-warm-50 px-5 py-5 shadow-sm">
-                <p class="mb-2 text-xs font-bold uppercase tracking-wider text-warm-600">Atenție</p>
-                <p class="text-[15px] leading-relaxed text-sand-700">{emotionalDominanceNarrative}</p>
+              <div class="rounded-xl border border-warm-200/60 bg-warm-50/40 px-5 py-4">
+                <p class="mb-2 text-xs font-bold uppercase tracking-wider text-warm-600">Tipul de abordare recomandat</p>
+                <p class="text-[15px] leading-relaxed text-sand-800">{narrative.scenario}</p>
               </div>
-            {/if}
 
-            <div class="rounded-xl border border-sand-200 bg-white px-5 py-5 shadow-sm sm:px-6">
-              <p class="mb-2.5 text-xs font-bold uppercase tracking-wider text-night-500">Zonele de regenerare afectate</p>
-              <p class="text-[15px] leading-relaxed text-sand-700">{narrative.pillars}</p>
+              {#if diagnosticResult.saboteurDominance === 'EMOTIONAL'}
+                <div class="rounded-xl border-l-4 border-l-warm-400 bg-warm-50/40 px-5 py-4">
+                  <p class="mb-2 text-xs font-bold uppercase tracking-wider text-warm-600">Atenție</p>
+                  <p class="text-[15px] leading-relaxed text-sand-700">{emotionalDominanceNarrative}</p>
+                </div>
+              {/if}
+
+              <div class="rounded-xl border border-sand-200 bg-sand-50 px-5 py-4">
+                <p class="mb-2 text-xs font-bold uppercase tracking-wider text-night-500">Zonele de regenerare afectate</p>
+                <p class="text-[15px] leading-relaxed text-sand-700">{narrative.pillars}</p>
+              </div>
+
+              <button type="button" class="btn-primary mt-4" onclick={() => goToStep(3)}>
+                Continuă
+              </button>
             </div>
-
-            <button type="button" class="btn-primary mt-4" onclick={() => goToStep(3)}>
-              Continuă — Ce poți face
-            </button>
           </div>
         </div>
 
       <!-- STEP 3: Ce poți face -->
       {:else if resultStep === 3}
-        <!-- Dark hero header -->
-        <div class="relative overflow-hidden bg-night-900 px-4 pb-14 pt-12 sm:pb-20 sm:pt-16">
-          <div class="absolute inset-0" aria-hidden="true">
-            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--color-night-700)_0%,_transparent_60%)] opacity-60"></div>
-            <div class="absolute bottom-0 left-1/3 h-40 w-80 rounded-full bg-warm-500/5 blur-[80px]"></div>
-          </div>
-          <div class="relative mx-auto max-w-2xl">
-            <div class="mb-8 flex items-center gap-2 text-sm">
-              <span class="rounded-full bg-white/15 px-3 py-0.5 text-xs font-semibold text-night-200">3 din 3</span>
-              <span class="font-medium text-night-300">Ce poți face</span>
-            </div>
+        <div class="mx-auto max-w-2xl">
+          <div class="relative overflow-hidden rounded-2xl bg-white px-6 py-8 shadow-md shadow-sand-200/60 ring-1 ring-sand-200/80 sm:px-10 sm:py-10">
+            <div class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-night-500/60 via-night-400/80 to-night-500/60"></div>
 
-            <h2 class="font-serif text-3xl font-semibold text-white sm:text-4xl">
+            <h2 class="font-serif text-2xl font-medium text-sand-900 sm:text-3xl">
               Protocolul tău în trei faze
             </h2>
-            <p class="mt-2 text-base text-night-300">Aplică-le în ordine, câte una pe rând</p>
-          </div>
-        </div>
+            <p class="mt-2 text-sm text-sand-500">Aplică-le în ordine, câte una pe rând</p>
 
-        <!-- Content -->
-        <div class="mx-auto max-w-2xl px-4 py-10 sm:py-14">
-          <div class="space-y-6">
-            {#each diagnosticResult.protocol as phase, i}
-              <div class="overflow-hidden rounded-xl border border-sand-200 bg-white shadow-sm">
-                <!-- Phase header -->
-                <div class="flex items-center gap-3 border-b border-sand-100 bg-sand-50/50 px-5 py-3.5">
-                  <span class="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br {phaseColors[i]} text-sm font-bold text-white shadow-sm">
-                    {i + 1}
-                  </span>
-                  <div>
-                    <h3 class="font-serif text-lg font-semibold text-sand-900">{phase.name}</h3>
+            <div class="mt-8 space-y-5">
+              {#each diagnosticResult.protocol as phase, i}
+                <div class="overflow-hidden rounded-xl border border-sand-200 bg-sand-50/50">
+                  <!-- Phase header -->
+                  <div class="flex items-center gap-3 border-b border-sand-100 px-5 py-3">
+                    <span class="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br {phaseColors[i]} text-xs font-bold text-white shadow-sm">
+                      {i + 1}
+                    </span>
+                    <h3 class="font-serif text-base font-semibold text-sand-900">{phase.name}</h3>
+                  </div>
+                  <!-- Phase content -->
+                  <div class="bg-white px-5 py-4">
+                    <p class="text-[15px] leading-relaxed text-sand-700">{narrative.protocolPhases[i]}</p>
                   </div>
                 </div>
-                <!-- Phase content -->
-                <div class="px-5 py-4 sm:px-6">
-                  <p class="text-[15px] leading-relaxed text-sand-700">{narrative.protocolPhases[i]}</p>
-                </div>
-              </div>
-            {/each}
+              {/each}
 
-            <!-- Closing message -->
-            <div class="relative mt-4 overflow-hidden rounded-2xl bg-gradient-to-br from-night-800 to-night-900 px-6 py-8 sm:px-10 sm:py-10">
-              <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--color-night-700)_0%,_transparent_60%)] opacity-40" aria-hidden="true"></div>
-              <div class="relative">
-                <p class="font-serif text-xl font-medium text-white">
+              <!-- Closing message -->
+              <div class="rounded-xl border border-night-100 bg-night-50/40 px-5 py-5">
+                <p class="font-serif text-lg font-medium text-sand-900">
                   Un lucru important de reținut
                 </p>
-                <p class="mt-4 text-base leading-relaxed text-night-200">
+                <p class="mt-3 text-[15px] leading-relaxed text-sand-700">
                   Somnul nu e ceva ce poți forța — e ceva ce permiți. Acum ai o hartă clară a ce se întâmplă și de ce.
                 </p>
-                <p class="mt-3 text-base leading-relaxed text-night-200">
+                <p class="mt-2 text-[15px] leading-relaxed text-sand-700">
                   Începe cu Faza 1: alege 2-3 lucruri din cele de mai sus și aplică-le consistent timp de 2 săptămâni. Apoi observă ce s-a schimbat. Nu totul deodată — un pas la un moment dat.
                 </p>
               </div>
-            </div>
 
-            <div class="pt-2 text-center">
-              <button
-                type="button"
-                class="inline-flex items-center gap-1.5 text-sm font-medium text-sand-500 transition-colors hover:text-sand-700"
-                onclick={handleRestart}
-              >
-                <svg class="size-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H4.598a.75.75 0 00-.75.75v3.634a.75.75 0 001.5 0v-2.033l.312.311a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm-1.621-7.847a7 7 0 00-11.712 3.135.75.75 0 001.449.39 5.5 5.5 0 019.201-2.466l.312.311H10.51a.75.75 0 000 1.5h3.634a.75.75 0 00.75-.75V2.063a.75.75 0 00-1.5 0v2.033l-.312-.311a6.972 6.972 0 00-.392-.208z" clip-rule="evenodd" />
-                </svg>
-                Reia diagnosticul
-              </button>
+              <div class="pt-2 text-center">
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-1.5 text-sm font-medium text-sand-500 transition-colors hover:text-sand-700"
+                  onclick={handleRestart}
+                >
+                  <svg class="size-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H4.598a.75.75 0 00-.75.75v3.634a.75.75 0 001.5 0v-2.033l.312.311a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm-1.621-7.847a7 7 0 00-11.712 3.135.75.75 0 001.449.39 5.5 5.5 0 019.201-2.466l.312.311H10.51a.75.75 0 000 1.5h3.634a.75.75 0 00.75-.75V2.063a.75.75 0 00-1.5 0v2.033l-.312-.311a6.972 6.972 0 00-.392-.208z" clip-rule="evenodd" />
+                  </svg>
+                  Reia diagnosticul
+                </button>
+              </div>
             </div>
           </div>
         </div>

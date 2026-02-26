@@ -2,19 +2,25 @@ import { writable, derived } from 'svelte/store';
 import type {
 	DiagnosticState,
 	DiagnosticStep,
-	SleepArchetypeId,
+	OnsetAnswerId,
+	MaintenanceAnswerId,
+	MorningStateId,
 	ExternalSaboteurId,
 	InternalSaboteurId,
 	EmotionalSaboteurId,
 	Demographics,
 	DiagnosticResult
 } from '$lib/types';
-import { calculateDiagnosticResult } from '$lib/data/scoring';
+import { calculateDiagnosticResult, deriveArchetypesFromStep1 } from '$lib/data/scoring';
 
 function createInitialState(): DiagnosticState {
 	return {
 		currentStep: 1,
+		onsetAnswer: null,
+		maintenanceAnswer: null,
 		selectedArchetype: null,
+		secondaryArchetype: null,
+		morningState: null,
 		externalSaboteurs: [],
 		internalSaboteurs: [],
 		emotionalSaboteurs: [],
@@ -40,8 +46,21 @@ export const result = derived(diagnosticState, ($state): DiagnosticResult | null
 	return calculateDiagnosticResult($state);
 });
 
-export function selectArchetype(archetypeId: SleepArchetypeId): void {
-	diagnosticState.update((s) => ({ ...s, selectedArchetype: archetypeId, currentStep: 2 }));
+export function submitStep1(
+	onset: OnsetAnswerId,
+	maintenance: MaintenanceAnswerId,
+	morningState: MorningStateId
+): void {
+	const { primary, secondary } = deriveArchetypesFromStep1(onset, maintenance);
+	diagnosticState.update((s) => ({
+		...s,
+		onsetAnswer: onset,
+		maintenanceAnswer: maintenance,
+		selectedArchetype: primary,
+		secondaryArchetype: secondary,
+		morningState,
+		currentStep: 2
+	}));
 }
 
 export function submitExternalSaboteurs(selected: ExternalSaboteurId[]): void {

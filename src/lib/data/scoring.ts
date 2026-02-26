@@ -11,6 +11,9 @@ import type {
 	AdaptationPhaseId,
 	CausalLabel,
 	SleepArchetypeId,
+	MorningStateId,
+	OnsetAnswerId,
+	MaintenanceAnswerId,
 	ExternalSaboteurId,
 	InternalSaboteurId,
 	EmotionalSaboteurId
@@ -31,6 +34,36 @@ const archetypePillarSeeds: Record<SleepArchetypeId, PillarId[]> = {
 	G: ['NEUROVEGETATIVE_SAFETY', 'METABOLIC_QUIET'],
 	H: ['NEUROVEGETATIVE_SAFETY', 'GLYMPHATIC_FLOW']
 };
+
+// Morning state → pillar seeds: each morning state contributes 0-2 pillar hits
+const morningStatePillarSeeds: Record<MorningStateId, PillarId[]> = {
+	MORNING_OK: [],
+	CALM_TIRED: ['GLYMPHATIC_FLOW'],
+	TENSE_TIRED: ['NEUROVEGETATIVE_SAFETY', 'EMOTIONAL_CLOSURE'],
+	FOGGY_HEAVY: ['GLYMPHATIC_FLOW', 'METABOLIC_QUIET'],
+	IRRITABLE_EMPTY: ['EMOTIONAL_CLOSURE'],
+	ALERT_WIRED: ['NEUROVEGETATIVE_SAFETY']
+};
+
+// Derive primary + secondary archetype from onset + maintenance answers
+export function deriveArchetypesFromStep1(
+	onset: OnsetAnswerId,
+	maintenance: MaintenanceAnswerId
+): { primary: SleepArchetypeId; secondary: SleepArchetypeId | null } {
+	// 1. maintenance ≠ NORMAL → primary = maintenance ID
+	if (maintenance !== 'MAINTENANCE_NORMAL') {
+		const primary = maintenance as SleepArchetypeId;
+		// onset problematic → secondary
+		const secondary = onset !== 'ONSET_NORMAL' ? (onset as SleepArchetypeId) : null;
+		return { primary, secondary };
+	}
+	// 2. maintenance NORMAL, onset ≠ NORMAL → primary = onset ID
+	if (onset !== 'ONSET_NORMAL') {
+		return { primary: onset as SleepArchetypeId, secondary: null };
+	}
+	// 3. both NORMAL → primary = E (unrefreshing sleep)
+	return { primary: 'E', secondary: null };
+}
 
 export function calculateDiagnosticResult(state: DiagnosticState): DiagnosticResult {
 	const archetype = sleepArchetypes[state.selectedArchetype!];
@@ -68,8 +101,14 @@ export function calculateDiagnosticResult(state: DiagnosticState): DiagnosticRes
 		return { id: id as EmotionalSaboteurId, label: item?.label ?? id };
 	});
 
+	const secondaryArchetype = state.secondaryArchetype
+		? sleepArchetypes[state.secondaryArchetype]
+		: null;
+
 	return {
 		archetype,
+		secondaryArchetype,
+		morningState: state.morningState!,
 		causalLabels: derivedCausalLabels,
 		adaptationPhase: adaptationPhases[adaptationPhase],
 		saboteurDominance,
@@ -163,6 +202,22 @@ function calculateCompromisedPillars(
 	// Archetype seeds
 	if (state.selectedArchetype) {
 		const seeds = archetypePillarSeeds[state.selectedArchetype];
+		for (const pillarId of seeds) {
+			pillarHits[pillarId]++;
+		}
+	}
+
+	// Secondary archetype seeds
+	if (state.secondaryArchetype) {
+		const seeds = archetypePillarSeeds[state.secondaryArchetype];
+		for (const pillarId of seeds) {
+			pillarHits[pillarId]++;
+		}
+	}
+
+	// Morning state seeds
+	if (state.morningState) {
+		const seeds = morningStatePillarSeeds[state.morningState];
 		for (const pillarId of seeds) {
 			pillarHits[pillarId]++;
 		}

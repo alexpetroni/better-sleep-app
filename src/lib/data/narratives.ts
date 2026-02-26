@@ -1,5 +1,6 @@
 import type {
 	SleepArchetypeId,
+	MorningStateId,
 	ArchetypeNarrative,
 	CausalLabelId,
 	CausalLabelFragment,
@@ -67,6 +68,34 @@ export const archetypeNarratives: Record<SleepArchetypeId, ArchetypeNarrative> =
 		mechanism:
 			'Un ciclu complet de somn durează aproximativ 90 de minute și trece prin mai multe faze: somn ușor, somn profund, somn REM. La tine, ciclurile nu reușesc să se completeze — fiecare trezire resetează procesul. Fazele profunde și REM, care sunt cele mai vulnerabile la întreruperi, suferă cel mai mult. Un lucru important: somnul fragmentat afectează sănătatea mai mult decât un somn scurt dar continuu.'
 	}
+};
+
+// ═══════════════════════════════════════
+// A1) Morning state fragments
+// ═══════════════════════════════════════
+
+export const morningStateFragments: Record<MorningStateId, string> = {
+	MORNING_OK:
+		'Dimineața te simți relativ ok — ceea ce înseamnă că corpul reușește să se odihnească parțial, dar nu complet. E un semn bun: baza există, iar intervențiile pot avea efect rapid.',
+	CALM_TIRED:
+		'Dimineața te simți obosit, dar fără tensiune — un semn că somnul a fost insuficient ca durată sau profunzime, dar sistemul nervos nu e în alertă. Corpul cere mai mult somn profund, nu mai mult calm.',
+	TENSE_TIRED:
+		'Dimineața vii deja cu tensiune în corp — nu e oboseala normală de „încă nu m-am trezit", ci una care vine cu presiune, strângere, urgență. Sistemul nervos nu s-a oprit cu adevărat peste noapte.',
+	FOGGY_HEAVY:
+		'Dimineața simți cap greu, ceață mentală, parcă nu te-ai trezit cu adevărat. E un semn clasic că sistemul glimfatic — procesul de curățare a creierului care funcționează doar în somnul profund — nu a avut suficient timp să-și facă treaba.',
+	IRRITABLE_EMPTY:
+		'Dimineața vine cu iritabilitate și un gol interior. Nu e oboseală fizică — e o epuizare emoțională care se acumulează noapte de noapte. Când somnul nu oferă spațiu de procesare emoțională, dimineața aduce ce a rămas nedigerat.',
+	ALERT_WIRED:
+		'Te trezești surprinzător de alert — parcă n-ai fi dormit, dar nu ești obosit. E un semn paradoxal: cortizolul, hormonul de alertă, e deja ridicat de dimineața devreme. Corpul funcționează pe adrenalină, nu pe odihnă reală.'
+};
+
+// ═══════════════════════════════════════
+// A1b) Onset fragments (when onset is secondary)
+// ═══════════════════════════════════════
+
+export const onsetFragments: Record<'A' | 'F', string> = {
+	A: 'Pe lângă asta, și adormirea e dificilă — mintea nu se oprește ușor seara, ceea ce amplifică oboseala de a doua zi.',
+	F: 'Pe lângă asta, ceasul tău biologic e decalat — somnul vine foarte târziu, ceea ce scurtează durata reală de odihnă.'
 };
 
 // ═══════════════════════════════════════

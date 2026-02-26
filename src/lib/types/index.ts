@@ -190,6 +190,22 @@ export interface CausalLabelFragment {
 }
 
 // ═══════════════════════════════════════
+// STEP 1 — Onset / Maintenance / Morning
+// ═══════════════════════════════════════
+
+export type OnsetAnswerId = 'ONSET_NORMAL' | 'A' | 'F';
+
+export type MaintenanceAnswerId = 'MAINTENANCE_NORMAL' | 'B' | 'C' | 'D' | 'G' | 'H';
+
+export type MorningStateId =
+	| 'MORNING_OK'
+	| 'CALM_TIRED'
+	| 'TENSE_TIRED'
+	| 'FOGGY_HEAVY'
+	| 'IRRITABLE_EMPTY'
+	| 'ALERT_WIRED';
+
+// ═══════════════════════════════════════
 // DEMOGRAPHICS (Step 6)
 // ═══════════════════════════════════════
 
@@ -215,7 +231,11 @@ export type SaboteurDominance = 'EXTERNAL' | 'INTERNAL' | 'EMOTIONAL' | 'MIXED' 
 
 export interface DiagnosticState {
 	currentStep: DiagnosticStep;
+	onsetAnswer: OnsetAnswerId | null;
+	maintenanceAnswer: MaintenanceAnswerId | null;
 	selectedArchetype: SleepArchetypeId | null;
+	secondaryArchetype: SleepArchetypeId | null;
+	morningState: MorningStateId | null;
 	externalSaboteurs: ExternalSaboteurId[];
 	internalSaboteurs: InternalSaboteurId[];
 	emotionalSaboteurs: EmotionalSaboteurId[];
@@ -230,6 +250,8 @@ export interface DiagnosticState {
 
 export interface DiagnosticResult {
 	archetype: SleepArchetype;
+	secondaryArchetype: SleepArchetype | null;
+	morningState: MorningStateId;
 	causalLabels: CausalLabel[];
 	adaptationPhase: AdaptationPhase;
 	saboteurDominance: SaboteurDominance;

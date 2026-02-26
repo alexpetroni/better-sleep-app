@@ -1,5 +1,7 @@
 import type {
-	SleepArchetypeId,
+	OnsetAnswerId,
+	MaintenanceAnswerId,
+	MorningStateId,
 	SaboteurItem,
 	SafetyQuestion,
 	ExternalSaboteurId,
@@ -12,23 +14,54 @@ import type {
 } from '$lib/types';
 
 // ═══════════════════════════════════════
-// STEP 1 — Sleep Pattern (single-select)
+// STEP 1A — Onset: "Cum adormi?" (single-select)
 // ═══════════════════════════════════════
 
-export interface Step1Option {
-	id: SleepArchetypeId;
+export interface Step1OnsetOption {
+	id: OnsetAnswerId;
 	label: string;
 }
 
-export const step1Options: Step1Option[] = [
+export const step1OnsetOptions: Step1OnsetOption[] = [
+	{ id: 'ONSET_NORMAL', label: 'Adorm relativ ușor' },
 	{ id: 'A', label: 'Adorm greu (>30 minute)' },
+	{ id: 'F', label: 'Nu mi-e somn până foarte târziu' }
+];
+
+// ═══════════════════════════════════════
+// STEP 1B — Maintenance: "Ce se întâmplă pe parcursul nopții?" (single-select)
+// ═══════════════════════════════════════
+
+export interface Step1MaintenanceOption {
+	id: MaintenanceAnswerId;
+	label: string;
+}
+
+export const step1MaintenanceOptions: Step1MaintenanceOption[] = [
+	{ id: 'MAINTENANCE_NORMAL', label: 'Dorm continuu, fără probleme' },
 	{ id: 'B', label: 'Mă trezesc între 2–4 AM și nu mai pot readormi' },
-	{ id: 'C', label: 'Mă trezesc cu mult înainte de alarmă (4-5 AM)' },
-	{ id: 'D', label: 'Am somnul foarte ușor, mă trezesc de la orice' },
-	{ id: 'E', label: 'Dorm dar mă trezesc obosit' },
-	{ id: 'F', label: 'Nu mi-e somn până foarte târziu' },
+	{ id: 'C', label: 'Mă trezesc prea devreme (4-5 AM)' },
+	{ id: 'D', label: 'Somnul meu e foarte ușor, mă trezesc de la orice' },
 	{ id: 'G', label: 'Mă trezesc cu palpitații / transpirații / foame' },
 	{ id: 'H', label: 'Somnul meu e fragmentat constant' }
+];
+
+// ═══════════════════════════════════════
+// STEP 1C — Morning State (single-select, progressive reveal)
+// ═══════════════════════════════════════
+
+export interface Step1MorningOption {
+	id: MorningStateId;
+	label: string;
+}
+
+export const step1MorningOptions: Step1MorningOption[] = [
+	{ id: 'MORNING_OK', label: 'Mă simt relativ ok dimineața' },
+	{ id: 'CALM_TIRED', label: 'Obosit/ă, dar relativ calm/ă' },
+	{ id: 'TENSE_TIRED', label: 'Obosit/ă și deja tensionat/ă / presat/ă' },
+	{ id: 'FOGGY_HEAVY', label: 'Ceață mentală, corp greu, parcă nu m-am trezit' },
+	{ id: 'IRRITABLE_EMPTY', label: 'Iritat/ă, vid interior, fără chef de nimic' },
+	{ id: 'ALERT_WIRED', label: 'Surprinzător de alert/ă, parcă n-aș fi dormit' }
 ];
 
 // ═══════════════════════════════════════
@@ -293,7 +326,7 @@ export const step5Questions: SafetyQuestion[] = [
 
 // Step metadata for UI
 export const stepMeta = [
-	{ number: 1, title: 'Tiparul', subtitle: 'Care e problema ta dominantă?' },
+	{ number: 1, title: 'Tiparul', subtitle: 'Cum arată somnul tău?' },
 	{ number: 2, title: 'Externi', subtitle: 'Ce faci tu care afectează somnul?' },
 	{ number: 3, title: 'Interni', subtitle: 'Ce face corpul tău noaptea?' },
 	{ number: 4, title: 'Emoții', subtitle: 'Ce simți tu?' },

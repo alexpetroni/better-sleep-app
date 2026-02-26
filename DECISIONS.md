@@ -70,3 +70,11 @@ Landing page-ul arăta "prea gri" — paleta night-* originală (grey-blue: #1e2
 ## [2026-02-26] Componente din somn — acum stilizate independent
 
 Componentele copiate din proiectul somn (QuestionCard, OptionButton, CheckboxOption) au fost restilizate pentru better-sleep-app: accent lines, radio indicators, full-row clickable labels, hover shadows. Nu mai sunt copii verbatim — regula "nu le modifica fără discuție" e înlocuită cu "modificări cu atenție".
+
+## [2026-02-27] Step 1 restructurat: de la 8 opțiuni radio la 3 sub-întrebări (onset + maintenance + morning)
+
+Step 1 avea 8 opțiuni radio care amestecau probleme de adormire (A, F), de menținere (B, C, D, G, H) și de output (E). Utilizatorul alegea UNA singură, ceea ce pierdea informație — cineva care adoarme greu ȘI se trezește la 3 AM pierdea un semnal. În plus, lipseau variantele "adorm ușor" și "mă simt ok dimineața". Am restructurat în 3 sub-întrebări cu reveal progresiv: Partea A (onset, 3 opțiuni inclusiv ONSET_NORMAL), Partea B (maintenance, 6 opțiuni inclusiv MAINTENANCE_NORMAL), Partea C (morning, 6 opțiuni inclusiv MORNING_OK). Arhetipul se derivă: maintenance câștigă ca primar dacă e problematic, onset devine secundar. Ambele NORMAL → primar = E. Arhetipul secundar contribuie pillar seeds și un fragment narativ pe pagina rezultat.
+
+## [2026-02-27] Rezultat unificat vizual cu diagnosticul — eliminare dark heroes
+
+Pagina de rezultat avea un stil complet diferit: hero sections dark (night-900) cu radial gradients, step indicator cu card-buttons colorate, tipografie și layout dramatic. Arăta ca un alt site față de pagina de diagnostic (light, card-based, minimal). Am refăcut pagina de rezultat să folosească exact același limbaj vizual: background sand-50, card-uri albe cu rounded-2xl + shadow-md + ring + accent line (identic cu QuestionCard), progress bar cu dots (identic cu StepIndicator), logo persistent. Pașii din rezultat rămân clickabili pentru navigare liberă.

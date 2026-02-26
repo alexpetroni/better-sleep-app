@@ -10,7 +10,7 @@
     diagnosticState,
     currentStep,
     isComplete,
-    selectArchetype,
+    submitStep1,
     submitExternalSaboteurs,
     submitInternalSaboteurs,
     submitEmotionalSaboteurs,
@@ -19,8 +19,8 @@
     goBackOneStep,
     resetDiagnostic
   } from '$lib/stores/diagnostic';
-  import { step1Options, step2Items, step3Items, step4Items, step5Questions, stepMeta, sexOptions, ageRangeOptions, menopauseOptions, bodyTypeOptions } from '$lib/data/steps';
-  import type { SleepArchetypeId, ExternalSaboteurId, InternalSaboteurId, EmotionalSaboteurId, BiologicalSex, AgeRange, MenopauseStatus, BodyType } from '$lib/types';
+  import { step1OnsetOptions, step1MaintenanceOptions, step1MorningOptions, step2Items, step3Items, step4Items, step5Questions, stepMeta, sexOptions, ageRangeOptions, menopauseOptions, bodyTypeOptions } from '$lib/data/steps';
+  import type { OnsetAnswerId, MaintenanceAnswerId, MorningStateId, ExternalSaboteurId, InternalSaboteurId, EmotionalSaboteurId, BiologicalSex, AgeRange, MenopauseStatus, BodyType } from '$lib/types';
 
   // Local state for multi-select steps (preserved when going back)
   let step2Selected = $state<string[]>([]);
@@ -43,9 +43,50 @@
     }, 300);
   }
 
-  // Step 1
-  function handleStep1(archetypeId: string) {
-    animateTransition(() => selectArchetype(archetypeId as SleepArchetypeId));
+  // Step 1 — 3 sub-questions: onset, maintenance, morning
+  let step1Onset = $state<OnsetAnswerId | null>(null);
+  let step1Maintenance = $state<MaintenanceAnswerId | null>(null);
+  let step1Morning = $state<MorningStateId | null>(null);
+  let step1PartBVisible = $state(false);
+  let step1PartCVisible = $state(false);
+  let step1PartBEl = $state<HTMLElement | null>(null);
+  let step1PartCEl = $state<HTMLElement | null>(null);
+
+  function scrollToElement(el: HTMLElement | null) {
+    if (!el) return;
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  }
+
+  function handleStep1OnsetSelect(id: string) {
+    step1Onset = id as OnsetAnswerId;
+    if (!step1PartBVisible) {
+      setTimeout(() => {
+        step1PartBVisible = true;
+        // Wait for DOM update then scroll
+        setTimeout(() => scrollToElement(step1PartBEl), 50);
+      }, 150);
+    }
+  }
+
+  function handleStep1MaintenanceSelect(id: string) {
+    step1Maintenance = id as MaintenanceAnswerId;
+    if (!step1PartCVisible) {
+      setTimeout(() => {
+        step1PartCVisible = true;
+        setTimeout(() => scrollToElement(step1PartCEl), 50);
+      }, 150);
+    }
+  }
+
+  function handleStep1MorningSelect(morningId: string) {
+    step1Morning = morningId as MorningStateId;
+  }
+
+  function handleStep1Submit() {
+    if (!step1Onset || !step1Maintenance || !step1Morning) return;
+    animateTransition(() => submitStep1(step1Onset!, step1Maintenance!, step1Morning!));
   }
 
   // Step 2
@@ -148,6 +189,21 @@
     }
   });
 
+  // Restore step 1 local state from store (for back navigation)
+  $effect(() => {
+    if ($currentStep === 1 && $diagnosticState.onsetAnswer) {
+      step1Onset = $diagnosticState.onsetAnswer;
+      step1PartBVisible = true;
+      if ($diagnosticState.maintenanceAnswer) {
+        step1Maintenance = $diagnosticState.maintenanceAnswer;
+        step1PartCVisible = true;
+      }
+      if ($diagnosticState.morningState) {
+        step1Morning = $diagnosticState.morningState;
+      }
+    }
+  });
+
   onMount(() => {
     resetDiagnostic();
     visible = true;
@@ -159,6 +215,13 @@
   <!-- Subtle background accent -->
   <div class="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-night-50/30 to-transparent" aria-hidden="true"></div>
 
+  <!-- Logo -->
+  <div class="relative mb-6 text-center">
+    <a href="/" class="inline-block font-serif text-xl font-semibold text-night-700 transition-colors hover:text-night-900">
+      Better Sleep
+    </a>
+  </div>
+
   <!-- Step Indicator -->
   <div class="relative mb-10">
     <StepIndicator currentStep={$currentStep} />
@@ -168,19 +231,65 @@
   <div
     class="relative transition-all duration-300 ease-in-out {visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}"
   >
-    <!-- STEP 1: Sleep Pattern -->
+    <!-- STEP 1: Onset + Maintenance + Morning State -->
     {#if $currentStep === 1}
-      <QuestionCard text={stepMeta[0].subtitle} subtext="Alege cea care te descrie cel mai bine.">
+      <QuestionCard text={stepMeta[0].subtitle} subtext="">
         {#snippet children()}
-          <div class="space-y-2.5" role="radiogroup" aria-label="Tipare de somn">
-            {#each step1Options as option}
+          <!-- Part A: Onset -->
+          <div class="mb-4">
+            <p class="text-base font-semibold text-sand-800">Cum adormi?</p>
+          </div>
+          <div class="space-y-2.5" role="radiogroup" aria-label="Cum adormi">
+            {#each step1OnsetOptions as option}
               <OptionButton
                 label={option.label}
-                selected={$diagnosticState.selectedArchetype === option.id}
-                onclick={() => handleStep1(option.id)}
+                selected={step1Onset === option.id}
+                onclick={() => handleStep1OnsetSelect(option.id)}
               />
             {/each}
           </div>
+
+          <!-- Part B: Maintenance (progressive reveal) -->
+          {#if step1PartBVisible}
+            <div bind:this={step1PartBEl} class="mt-8 transition-all duration-300 ease-in-out {step1PartBVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}">
+              <div class="mb-4 border-t border-sand-200 pt-6">
+                <p class="text-base font-semibold text-sand-800">Ce se întâmplă pe parcursul nopții?</p>
+              </div>
+              <div class="space-y-2.5" role="radiogroup" aria-label="Parcursul nopții">
+                {#each step1MaintenanceOptions as option}
+                  <OptionButton
+                    label={option.label}
+                    selected={step1Maintenance === option.id}
+                    onclick={() => handleStep1MaintenanceSelect(option.id)}
+                  />
+                {/each}
+              </div>
+            </div>
+          {/if}
+
+          <!-- Part C: Morning State (progressive reveal) -->
+          {#if step1PartCVisible}
+            <div bind:this={step1PartCEl} class="mt-8 transition-all duration-300 ease-in-out {step1PartCVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}">
+              <div class="mb-4 border-t border-sand-200 pt-6">
+                <p class="text-base font-semibold text-sand-800">Cum te simți dimineața, înainte de cafea?</p>
+              </div>
+              <div class="space-y-2.5" role="radiogroup" aria-label="Starea de dimineață">
+                {#each step1MorningOptions as option}
+                  <OptionButton
+                    label={option.label}
+                    selected={step1Morning === option.id}
+                    onclick={() => handleStep1MorningSelect(option.id)}
+                  />
+                {/each}
+              </div>
+
+              {#if step1Morning}
+                <button type="button" class="btn-primary mt-6" onclick={handleStep1Submit}>
+                  Continuă
+                </button>
+              {/if}
+            </div>
+          {/if}
         {/snippet}
       </QuestionCard>
 

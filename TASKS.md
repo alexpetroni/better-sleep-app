@@ -2,17 +2,17 @@
 
 ## Today
 
-- [x] Pas demografic (Step 6): tipuri, store, scoring, UI, narratives
-- [x] Rescriere completă texte rezultat — ton cald, medic funcțional
-- [x] Deduplicare acțiuni protocol — SHARED constants cross-pilon
-- [x] Redesign pagini — landing, diagnostic, rezultat, componente
-- [x] Paletă night-* schimbată din gri-albastru în indigo cald
+- [x] Step 1 restructurat: 3 sub-întrebări (onset + maintenance + morning) cu reveal progresiv
+- [x] Derivare arhetip primar/secundar din onset + maintenance
+- [x] Logo "Better Sleep" persistent pe diagnostic + rezultat (clickabil spre landing)
+- [x] Rezultat redesign: unificat vizual cu pagina diagnostic (card-based, progress bar)
 - [x] Actualizare documentație proiect
 
 ## Next
 
-- [ ] Testare manuală end-to-end (toate combinațiile, inclusiv demografice: M/F/UNSPEC × vârstă × menopauză)
-- [ ] Testare narativ: 0 cauze / 1 cauză / 3+ cauze, EMOTIONAL dominance, toate arhetipurile × demografice
+- [ ] Testare manuală end-to-end (toate combinațiile onset×maintenance×morning, inclusiv demografice)
+- [ ] Testare narativ: secundar onset, 0 cauze / 1 cauză / 3+ cauze, EMOTIONAL dominance
+- [ ] Testare back navigation Step 1 (toate 3 selecțiile + visibility flags păstrate)
 - [ ] Verificare StepIndicator pe mobil cu 6 dots
 - [ ] Sleep Regeneration Score™ — placeholder vizual pe pagina rezultat
 - [ ] CTA email capture pe pagina rezultat
@@ -30,6 +30,21 @@
 - [ ] Variante de limbă (engleză)
 - [ ] Export PDF al rezultatului
 - [ ] Integrare cu dispozitive de somn (wearables)
+
+## Done (2026-02-27)
+
+- [x] Step 1 restructurat din 8 opțiuni radio → 3 sub-întrebări: onset (3 opțiuni) + maintenance (6) + morning (6)
+- [x] Tipuri noi: `OnsetAnswerId`, `MaintenanceAnswerId`; `MORNING_OK` adăugat la `MorningStateId`
+- [x] `DiagnosticState` extins: `onsetAnswer`, `maintenanceAnswer`, `secondaryArchetype`
+- [x] `deriveArchetypesFromStep1()` în scoring.ts — derivare primar + secundar
+- [x] `onsetFragments` în narratives.ts — texte scurte pentru onset ca secundar
+- [x] `MORNING_OK` adăugat la morningStatePillarSeeds ([] — fără impact piloni) și morningStateFragments
+- [x] Secondary archetype contribuie pillar seeds în `calculateCompromisedPillars()`
+- [x] `selectArchetype()` eliminat din store (înlocuit de `submitStep1(onset, maintenance, morning)`)
+- [x] Diagnostic UI: reveal progresiv Part A → B → C cu scroll-into-view
+- [x] Logo "Better Sleep" adăugat pe paginile diagnostic și rezultat (clickabil → landing)
+- [x] Rezultat: step indicator progress bar (3 pași clickabili, stil identic diagnostic)
+- [x] Rezultat: dark heroes eliminate, conținut în card-uri albe (QuestionCard style)
 
 ## Done (2026-02-26)
 
