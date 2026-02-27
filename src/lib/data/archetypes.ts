@@ -4,7 +4,7 @@ export const sleepArchetypes: Record<SleepArchetypeId, SleepArchetype> = {
 	A: {
 		id: 'A',
 		name: 'Comutare Lentă',
-		nameEn: 'Slow Switch-Off',
+		nameEn: 'The Racing Mind',
 		description:
 			'Mintea și corpul tău nu reușesc să „coboare turația" seara. Stai treaz ore întregi, deși ești obosit.',
 		keyPhrase: 'Nu pot opri mintea seara'
@@ -12,7 +12,7 @@ export const sleepArchetypes: Record<SleepArchetypeId, SleepArchetype> = {
 	B: {
 		id: 'B',
 		name: 'Trezire Nocturnă',
-		nameEn: 'Night Waker',
+		nameEn: 'The 3AM Watcher',
 		description:
 			'Adormi relativ ușor, dar te trezești între 2 și 4 dimineața și nu mai poți readormi.',
 		keyPhrase: 'Mă trezesc la 3 dimineața și gata'
@@ -20,7 +20,7 @@ export const sleepArchetypes: Record<SleepArchetypeId, SleepArchetype> = {
 	C: {
 		id: 'C',
 		name: 'Trezire Timpurie',
-		nameEn: 'Early Riser',
+		nameEn: 'The Early Riser',
 		description:
 			'Te trezești cu mult înainte de alarmă — la 4 sau 5 dimineața — și nu mai poți dormi, deși ai nevoie.',
 		keyPhrase: 'Mă trezesc prea devreme, fără alarmă'
@@ -28,7 +28,7 @@ export const sleepArchetypes: Record<SleepArchetypeId, SleepArchetype> = {
 	D: {
 		id: 'D',
 		name: 'Somn Ușor',
-		nameEn: 'Light Sleeper',
+		nameEn: 'The Light Sleeper',
 		description:
 			'Orice zgomot, mișcare sau schimbare de lumină te trezește. Somnul tău e superficial și fragil.',
 		keyPhrase: 'Mă trezesc de la orice'
@@ -36,7 +36,7 @@ export const sleepArchetypes: Record<SleepArchetypeId, SleepArchetype> = {
 	E: {
 		id: 'E',
 		name: 'Somn Neodihnitor',
-		nameEn: 'Non-Restorative Sleep',
+		nameEn: 'The Tired Sleeper',
 		description:
 			'Dormi un număr suficient de ore, dar te trezești la fel de obosit ca atunci când te-ai culcat.',
 		keyPhrase: 'Dorm, dar nu mă odihnesc'
@@ -44,7 +44,7 @@ export const sleepArchetypes: Record<SleepArchetypeId, SleepArchetype> = {
 	F: {
 		id: 'F',
 		name: 'Nocturn',
-		nameEn: 'Night Owl',
+		nameEn: 'The Night Owl',
 		description:
 			'Nu ți-e somn până foarte târziu: 1, 2, sau 3 noaptea. Dimineața e un chin.',
 		keyPhrase: 'Nu mi-e somn până la 2-3 noaptea'
@@ -52,7 +52,7 @@ export const sleepArchetypes: Record<SleepArchetypeId, SleepArchetype> = {
 	G: {
 		id: 'G',
 		name: 'Trezire Autonomă',
-		nameEn: 'Autonomic Waker',
+		nameEn: 'The Body Alarm',
 		description:
 			'Te trezești brusc cu palpitații, transpirații, foame intensă sau senzație de panică.',
 		keyPhrase: 'Mă trezesc cu inima care bate tare'
@@ -60,7 +60,7 @@ export const sleepArchetypes: Record<SleepArchetypeId, SleepArchetype> = {
 	H: {
 		id: 'H',
 		name: 'Somn Fragmentat',
-		nameEn: 'Fragmented Sleep',
+		nameEn: 'The Patchwork Sleeper',
 		description:
 			'Somnul tău e întrerupt constant. Te trezești de 3-5 ori pe noapte, fără un motiv clar.',
 		keyPhrase: 'Mă trezesc de mai multe ori în fiecare noapte'

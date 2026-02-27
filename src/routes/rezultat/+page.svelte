@@ -153,8 +153,11 @@
 
             <!-- Title -->
             <h1 class="font-serif text-2xl font-medium text-sand-900 sm:text-3xl">
-              {diagnosticResult.archetype.name}
+              {diagnosticResult.archetype.nameEn}
             </h1>
+            <p class="mt-1 text-sm font-medium uppercase tracking-wide text-sand-400">
+              {diagnosticResult.archetype.name}
+            </p>
             <p class="mt-2 font-serif text-base italic text-sand-500">
               „{diagnosticResult.archetype.keyPhrase}"
             </p>
