@@ -304,7 +304,7 @@ export const step4Items: SaboteurItem[] = [
 	},
 	{
 		id: 'LIFE_TRANSITION' satisfies EmotionalSaboteurId,
-		label: 'Trec printr-o schimbare mare de viață (copil nou, pensionare, mutare, despărțire recentă)',
+		label: 'Trec printr-o schimbare mare de viață (copil mic, pensionare, mutare, despărțire recentă)',
 		pillarImpact: ['EMOTIONAL_CLOSURE', 'HORMONAL_HARMONY'],
 		causalLabel: 'EMOTIONAL'
 	},

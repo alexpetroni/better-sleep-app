@@ -214,12 +214,12 @@ export function buildCausesNarrative(labels: CausalLabel[], demographics?: Demog
 
 	if (labels.length === 1) {
 		const fragment = getFragment(labels[0].id);
-		return `Pe lângă tiparul de somn, din răspunsurile tale apare și ${fragment}. Protocolul de mai jos ține cont de asta.`;
+		return `Pe lângă tiparul de somn, din răspunsurile tale apare și ${fragment}. Planul de mai jos ține cont de asta.`;
 	}
 
 	const fragments = labels.map((l) => getFragment(l.id));
 	const list = joinRomanian(fragments);
-	return `Pe lângă tiparul de somn, apar mai mulți factori care contribuie: ${list}. Fiecare e luat în calcul în protocolul tău.`;
+	return `Pe lângă tiparul de somn, apar mai mulți factori care contribuie: ${list}. Fiecare e luat în calcul în planul tău.`;
 }
 
 // ═══════════════════════════════════════
@@ -241,7 +241,7 @@ export const adaptationNarratives: Record<AdaptationPhaseId, string> = {
 
 const ageAdaptationNotes: Partial<Record<AgeRange, string>> = {
 	'18_30': ' La vârsta ta, corpul are o capacitate excelentă de recuperare — intervențiile pot avea efect vizibil în câteva zile.',
-	'56_PLUS': ' După 55 de ani, arhitectura somnului se schimbă natural: mai puțin somn profund, mai multe treziri scurte. Nu toate trezirile sunt probleme — unele sunt fiziologice. Protocolul ține cont de asta.'
+	'56_PLUS': ' După 55 de ani, arhitectura somnului se schimbă natural: mai puțin somn profund, mai multe treziri scurte. Nu toate trezirile sunt probleme — unele sunt fiziologice. Planul ține cont de asta.'
 };
 
 export function getAdaptationNarrative(phaseId: AdaptationPhaseId, ageRange: AgeRange | null): string {
@@ -263,7 +263,7 @@ export const scenarioNarratives: Record<ScenarioId, string> = {
 	NEUROENDOCRINE:
 		'Ce apare cel mai clar e că sistemul nervos e suprasolicitat. Într-o situație ca asta, prioritatea nu e încă o regulă de somn sau încă o tehnică. E ceva mai fundamental: corpul trebuie să primească semnalul, la nivel profund, că e sigur să coboare garda. Mai puțină disciplină, mai mult calm. Mai puțin „trebuie", mai mult „e ok".',
 	GRADUAL:
-		'Din răspunsurile tale apar factori pe mai multe niveluri: externi, interni, poate și emoționali. Nu e neapărat mai grav — dar înseamnă că abordarea corectă e graduală. Un lucru la un moment dat, în ordinea care contează cel mai mult. Protocolul de mai jos reflectă exact această ordine.'
+		'Din răspunsurile tale apar factori pe mai multe niveluri: externi, interni, poate și emoționali. Nu e neapărat mai grav — dar înseamnă că abordarea corectă e graduală. Un lucru la un moment dat, în ordinea care contează cel mai mult. Planul de mai jos reflectă exact această ordine.'
 };
 
 // ═══════════════════════════════════════
@@ -274,7 +274,7 @@ export function buildPillarsNarrative(
 	compromisedPillars: { pillar: Pillar; status: PillarStatus }[]
 ): string {
 	if (compromisedPillars.length === 0) {
-		return 'Niciun pilon de regenerare nu e afectat critic. Protocolul se va concentra pe consolidarea generală a calității somnului.';
+		return 'Niciun pilon de regenerare nu e afectat critic. Planul se va concentra pe consolidarea generală a calității somnului.';
 	}
 
 	const critical = compromisedPillars
@@ -290,8 +290,8 @@ export function buildPillarsNarrative(
 		const list = joinRomanian(critical);
 		parts.push(
 			critical.length === 1
-				? `Zona cea mai afectată e ${list} — aici protocolul va pune accent în mod special`
-				: `Zonele cele mai afectate sunt ${list} — aici protocolul va pune accent în mod special`
+				? `Zona cea mai afectată e ${list} — aici planul va pune accent în mod special`
+				: `Zonele cele mai afectate sunt ${list} — aici planul va pune accent în mod special`
 		);
 	}
 

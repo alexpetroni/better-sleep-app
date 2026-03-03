@@ -7,7 +7,7 @@
   const diagnosticSteps = stepMeta.filter(s => s.number <= 6);
 </script>
 
-<nav aria-label="Progres diagnostic" class="mx-auto max-w-2xl px-4">
+<nav aria-label="Progres analiză" class="mx-auto max-w-2xl px-4">
   <!-- Progress bar (background) -->
   <div class="relative mb-4">
     <div class="h-1 rounded-full bg-sand-200">

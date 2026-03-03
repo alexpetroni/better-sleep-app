@@ -58,7 +58,7 @@
   const resultSteps: { id: 1 | 2 | 3; title: string; subtitle: string }[] = [
     { id: 1, title: 'Ce se întâmplă', subtitle: 'Tiparul tău' },
     { id: 2, title: 'De ce', subtitle: 'Cauze și fază' },
-    { id: 3, title: 'Ce poți face', subtitle: 'Protocol' }
+    { id: 3, title: 'Ce poți face', subtitle: 'Plan' }
   ];
 
   const phaseColors = ['from-warm-500 to-warm-600', 'from-night-500 to-night-600', 'from-night-700 to-night-800'];
@@ -82,6 +82,24 @@
     diagnosticResult.externalSaboteurCount + diagnosticResult.internalSaboteurCount + diagnosticResult.emotionalSaboteurCount > 0
     : false
   );
+
+  let emailInput = $state('');
+  let emailSubmitted = $state(false);
+  let emailError = $state('');
+
+  function handleEmailSubmit(e: SubmitEvent) {
+    e.preventDefault();
+    const trimmed = emailInput.trim();
+    if (!trimmed) return;
+    // Basic validation beyond HTML5
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      emailError = 'Te rog introdu o adresă de email validă.';
+      return;
+    }
+    emailError = '';
+    // TODO: send to backend when available
+    emailSubmitted = true;
+  }
 </script>
 
 {#if diagnosticResult && narrative}
@@ -284,7 +302,7 @@
             <div class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-night-500/60 via-night-400/80 to-night-500/60"></div>
 
             <h2 class="font-serif text-2xl font-medium text-sand-900 sm:text-3xl">
-              Protocolul tău în trei faze
+              Planul tău în trei pași
             </h2>
             <p class="mt-2 text-sm text-sand-500">Aplică-le în ordine, câte una pe rând</p>
 
@@ -339,7 +357,59 @@
                 </p>
               </div>
 
-              <div class="pt-2 text-center">
+              <!-- Email capture -->
+              <div class="rounded-xl border border-night-100 bg-night-50/40 px-5 py-6">
+                {#if emailSubmitted}
+                  <div class="text-center">
+                    <svg class="mx-auto size-8 text-night-500" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <p class="mt-3 font-serif text-lg font-medium text-sand-900">Gata, te-am notat.</p>
+                    <p class="mt-2 text-sm leading-relaxed text-sand-600">
+                      Vei primi ghidul pe <span class="font-medium text-sand-800">{emailInput.trim()}</span> în curând.
+                    </p>
+                  </div>
+                {:else}
+                  <p class="font-serif text-lg font-medium text-sand-900">
+                    Vrei sfaturi personalizate pe email?
+                  </p>
+                  <p class="mt-2 text-[15px] leading-relaxed text-sand-700">
+                    Pe baza rezultatelor tale din analiză, îți pregătim un ghid adaptat profilului tău: explicații detaliate pentru fiecare recomandare, un program săptămânal de implementare și resurse alese specific pentru situația ta.
+                  </p>
+                  <form onsubmit={handleEmailSubmit} class="mt-4 flex gap-3 sm:items-start">
+                    <div class="flex-1">
+                      <input
+                        type="email"
+                        required
+                        placeholder="adresa@email.ro"
+                        bind:value={emailInput}
+                        class="w-full rounded-lg border border-sand-300 bg-white px-4 py-2.5 text-sm text-sand-900 placeholder:text-sand-400 transition-colors focus:border-night-400 focus:ring-2 focus:ring-night-200 focus:outline-none"
+                      />
+                      {#if emailError}
+                        <p class="mt-1.5 text-xs text-red-500">{emailError}</p>
+                      {/if}
+                    </div>
+                    <button
+                      type="submit"
+                      class="shrink-0 rounded-lg bg-gradient-to-br from-night-600 to-night-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:from-night-500 hover:to-night-600 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-night-500"
+                    >
+                      Trimite-mi ghidul
+                    </button>
+                  </form>
+                {/if}
+              </div>
+
+              <div class="pt-2 flex flex-col items-center gap-3">
+                <a
+                  href="/feedback"
+                  class="inline-flex items-center gap-2 text-sm font-medium text-night-600 transition-colors hover:text-night-800"
+                >
+                  <svg class="size-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M3.505 2.365A41.369 41.369 0 019 2c1.863 0 3.697.124 5.495.365 1.247.167 2.18 1.108 2.435 2.268a4.45 4.45 0 00-.577-.069 43.141 43.141 0 00-4.706 0C9.229 4.696 7.5 6.727 7.5 8.998v2.24c0 1.413.67 2.735 1.76 3.562l-2.98 2.98A.75.75 0 015 17.25v-3.443c-.501-.048-1-.106-1.495-.172C2.033 13.438 1 12.162 1 10.72V5.28c0-1.441 1.033-2.717 2.505-2.914z" />
+                    <path d="M14 6c.762 0 1.52.02 2.272.062 1.057.062 1.978.93 1.978 2.044v3.462c0 1.114-.921 1.982-1.978 2.044A43.349 43.349 0 0114 13.643v3.107a.75.75 0 01-1.28.53l-2.98-2.98A3.01 3.01 0 0011.5 11.24V8.999c0-1.574 1.163-2.874 2.5-2.999z" />
+                  </svg>
+                  Ajută-ne să devenim mai buni. Părerea ta contează.
+                </a>
                 <button
                   type="button"
                   class="inline-flex items-center gap-1.5 text-sm font-medium text-sand-500 transition-colors hover:text-sand-700"
@@ -348,7 +418,7 @@
                   <svg class="size-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H4.598a.75.75 0 00-.75.75v3.634a.75.75 0 001.5 0v-2.033l.312.311a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm-1.621-7.847a7 7 0 00-11.712 3.135.75.75 0 001.449.39 5.5 5.5 0 019.201-2.466l.312.311H10.51a.75.75 0 000 1.5h3.634a.75.75 0 00.75-.75V2.063a.75.75 0 00-1.5 0v2.033l-.312-.311a6.972 6.972 0 00-.392-.208z" clip-rule="evenodd" />
                   </svg>
-                  Reia diagnosticul
+                  Reia analiza
                 </button>
               </div>
             </div>
