@@ -101,6 +101,8 @@ export function calculateDiagnosticResult(state: DiagnosticState): DiagnosticRes
 		return { id: id as EmotionalSaboteurId, label: item?.label ?? id };
 	});
 
+	const substanceWithdrawalWarning = state.externalSaboteurs.includes('SUBSTANCE_WITHDRAWAL' as ExternalSaboteurId);
+
 	const secondaryArchetype = state.secondaryArchetype
 		? sleepArchetypes[state.secondaryArchetype]
 		: null;
@@ -120,6 +122,7 @@ export function calculateDiagnosticResult(state: DiagnosticState): DiagnosticRes
 		selectedEmotionalSaboteurs,
 		safetyScore: state.safetyScore,
 		safetyCompromised,
+		substanceWithdrawalWarning,
 		scenario,
 		compromisedPillars,
 		protocol: personalizedProtocol,
@@ -155,8 +158,9 @@ function classifySaboteurDominance(
 	internalCount: number,
 	emotionalCount: number
 ): SaboteurDominance {
-	// Thresholds: external ≥3/19, internal ≥2/12, emotional ≥2/4
-	// TODO: external threshold stays at ≥3 (16% of 19). Reconsider after real data collection.
+	// Normalized thresholds (~15-25% endorsement per category):
+	// external ≥3/19 = 15.8%, internal ≥2/12 = 16.7%, emotional ≥2/8 = 25%
+	// Emotional was 2/4=50% before expansion to 8 items — now 2/8=25% is balanced.
 	const externalDominant = externalCount >= 3;
 	const internalDominant = internalCount >= 2;
 	const emotionalDominant = emotionalCount >= 2;
@@ -273,20 +277,46 @@ function calculateCompromisedPillars(
 		});
 }
 
+// Fallback actions for zero/low saboteur scenarios
+const fallbackActions: Record<ProtocolPhaseId, ProtocolAction[]> = {
+	REMOVE: [
+		{ text: 'Stop cofeină după ora 14:00', pillar: 'CIRCADIAN_COHERENCE', priority: 1 },
+		{ text: 'Fără ecrane 90 de minute înainte de somn', pillar: 'CIRCADIAN_COHERENCE', priority: 2 }
+	],
+	REPAIR: [
+		{ text: '15 minute lumină naturală dimineața (primele 30 min după trezire)', pillar: 'CIRCADIAN_COHERENCE', priority: 1 },
+		{ text: '10 minute respirație vagală seara (expir mai lung decât inspir)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 1 },
+		{ text: '20-30 minute mișcare zilnică (plimbare rapidă, zone 2 cardio)', pillar: 'NEUROVEGETATIVE_SAFETY', priority: 2 }
+	],
+	REGULATE: [
+		{ text: 'Creează un ritual de seară constant (aceleași acțiuni, aceeași ordine)', pillar: 'CIRCADIAN_COHERENCE', priority: 1 },
+		{ text: 'Asigură minimum 7 ore de somn continuu', pillar: 'GLYMPHATIC_FLOW', priority: 1 }
+	]
+};
+
 function generateProtocol(
 	compromisedPillarIds: PillarId[]
 ): ProtocolPhase[] {
-	return [
-		buildPhase('REMOVE', 'Elimină Sabotorii', 'Primii pași: oprește ce îți sabotează somnul activ.', compromisedPillarIds),
-		buildPhase('REPAIR', 'Repară Terenul', 'Reconstruiește bazele unui somn sănătos.', compromisedPillarIds),
-		buildPhase('REGULATE', 'Reglează Axa', 'Optimizare și intervenții mai avansate.', compromisedPillarIds)
+	const phases: ProtocolPhase[] = [
+		buildPhase('REMOVE', 'Elimină Sabotorii', 'Primii pași: oprește ce îți sabotează somnul activ.', '~2 săptămâni', compromisedPillarIds),
+		buildPhase('REPAIR', 'Repară Terenul', 'Reconstruiește bazele unui somn sănătos.', '2-4 săptămâni', compromisedPillarIds),
+		buildPhase('REGULATE', 'Reglează Axa', 'Optimizare și intervenții mai avansate.', 'continuu', compromisedPillarIds)
 	];
+
+	// Fallback: if a phase has 0 actions (zero-saboteur edge case), use defaults
+	return phases.map((phase) => {
+		if (phase.actions.length === 0) {
+			return { ...phase, actions: fallbackActions[phase.id] };
+		}
+		return phase;
+	});
 }
 
 function buildPhase(
 	id: ProtocolPhaseId,
 	name: string,
 	description: string,
+	timeline: string,
 	pillarIds: PillarId[]
 ): ProtocolPhase {
 	const allActions: ProtocolAction[] = [];
@@ -303,7 +333,7 @@ function buildPhase(
 	const sorted = unique.sort((a, b) => a.priority - b.priority);
 	const selected = sorted.slice(0, 5);
 
-	return { id, name, description, actions: selected };
+	return { id, name, description, timeline, actions: selected };
 }
 
 function deduplicateActions(actions: ProtocolAction[]): ProtocolAction[] {
@@ -358,6 +388,46 @@ function personalizeProtocol(
 					}
 				];
 			}
+		}
+
+		// Age-based personalization
+		const isOlder = demographics.ageRange === '56_PLUS';
+		const isYoung = demographics.ageRange === '18_30';
+
+		if (phase.id === 'REPAIR') {
+			// Older adults: gentler exercise recommendation
+			if (isOlder) {
+				actions = actions.map((a) => {
+					if (a.text.includes('20-30 minute mișcare zilnică')) {
+						return { ...a, text: '20-30 minute mișcare zilnică (plimbare, stretching, yoga — fără impact intens)' };
+					}
+					return a;
+				});
+			}
+			// Young adults: circadian hygiene emphasis
+			if (isYoung) {
+				const hasCircadian = actions.some((a) => a.text.includes('ora de culcare'));
+				if (!hasCircadian) {
+					actions = [
+						...actions,
+						{
+							text: 'Stabilizează ora de culcare (±30 min) — chiar și în weekend',
+							pillar: 'CIRCADIAN_COHERENCE' as PillarId,
+							priority: 2
+						}
+					];
+				}
+			}
+		}
+
+		if (phase.id === 'REGULATE' && isOlder) {
+			// Older adults: note about supplement metabolism
+			actions = actions.map((a) => {
+				if (a.text.includes('CoQ10')) {
+					return { ...a, text: 'CoQ10 (100-200mg) pentru suport mitocondrial — important după 55 ani (consultă un specialist)', contraindication: 'Interacțiune cu anticoagulante (warfarină). Consultă medicul dacă iei medicamente pentru inimă.' };
+				}
+				return a;
+			});
 		}
 
 		return { ...phase, actions };

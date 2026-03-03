@@ -11,7 +11,9 @@ import type {
 	PillarId,
 	PillarStatus,
 	Pillar,
-	ProtocolPhase
+	ProtocolPhase,
+	EmotionalSaboteurId,
+	AgeRange
 } from '$lib/types';
 import { pillars } from './pillars';
 
@@ -234,6 +236,22 @@ export const adaptationNarratives: Record<AdaptationPhaseId, string> = {
 };
 
 // ═══════════════════════════════════════
+// D2) Age-specific adaptation note
+// ═══════════════════════════════════════
+
+const ageAdaptationNotes: Partial<Record<AgeRange, string>> = {
+	'18_30': ' La vârsta ta, corpul are o capacitate excelentă de recuperare — intervențiile pot avea efect vizibil în câteva zile.',
+	'56_PLUS': ' După 55 de ani, arhitectura somnului se schimbă natural: mai puțin somn profund, mai multe treziri scurte. Nu toate trezirile sunt probleme — unele sunt fiziologice. Protocolul ține cont de asta.'
+};
+
+export function getAdaptationNarrative(phaseId: AdaptationPhaseId, ageRange: AgeRange | null): string {
+	const base = adaptationNarratives[phaseId];
+	if (!ageRange) return base;
+	const note = ageAdaptationNotes[ageRange];
+	return note ? base + note : base;
+}
+
+// ═══════════════════════════════════════
 // E) Scenario narratives
 // ═══════════════════════════════════════
 
@@ -334,11 +352,52 @@ export function buildProtocolPhaseNarrative(phase: ProtocolPhase): string {
 }
 
 // ═══════════════════════════════════════
-// H) Emotional dominance narrative
+// H) Emotional dominance narrative (differentiated by selected items)
 // ═══════════════════════════════════════
 
+const emotionalTherapyRecommendations: Partial<Record<EmotionalSaboteurId, string>> = {
+	UNRESOLVED_TRAUMA: 'EMDR (Eye Movement Desensitization and Reprocessing) sau terapia somatică — abordări cu eficacitate dovedită pentru experiențe traumatice neintegrate',
+	CHRONIC_ANXIETY: 'terapia cognitiv-comportamentală (CBT) — ajută la restructurarea gândurilor repetitive și la reducerea hipervigilenței',
+	DEPRESSION: 'psihoterapie cu un specialist în depresie (CBT sau terapie interpersonală) și, dacă e necesar, evaluare psihiatrică',
+	PERFECTIONISM: 'terapia cognitiv-comportamentală (CBT) sau terapia de acceptare și angajament (ACT) — ajută la eliberarea nevoii de control',
+	BURNOUT: 'coaching sau psihoterapie axată pe limite sănătoase și recuperarea din epuizare profesională',
+	LONELINESS: 'psihoterapie individuală și, eventual, terapie de grup — conexiunea socială e un factor protector pentru somn'
+};
+
+export function buildEmotionalDominanceNarrative(selectedEmotional: EmotionalSaboteurId[]): string {
+	const intro = 'Ce apare din răspunsurile tale e că factorii dominanți sunt de natură emoțională. Sistemul nervos poartă o povară care depășește ceea ce tehnicile de igienă a somnului pot rezolva.';
+
+	// Find the most specific therapy recommendation
+	const recommendations: string[] = [];
+	for (const id of selectedEmotional) {
+		const rec = emotionalTherapyRecommendations[id];
+		if (rec && !recommendations.includes(rec)) {
+			recommendations.push(rec);
+		}
+	}
+
+	if (recommendations.length === 0) {
+		return `${intro} Într-o situație ca asta, cel mai eficient prim pas poate fi psihoterapia — un terapeut specializat poate ajuta la restabilirea sentimentului de siguranță interioară de care corpul are nevoie ca să se lase în somn.`;
+	}
+
+	if (recommendations.length === 1) {
+		return `${intro} Într-o situație ca asta, o abordare recomandată e ${recommendations[0]}. Un terapeut specializat poate ajuta la restabilirea siguranței interioare de care corpul are nevoie ca să se lase în somn.`;
+	}
+
+	const list = joinRomanian(recommendations);
+	return `${intro} Abordări care pot ajuta: ${list}. Un terapeut specializat poate ghida alegerea potrivită pentru situația ta.`;
+}
+
+// Keep static version for backward compatibility
 export const emotionalDominanceNarrative =
 	'Ce apare din răspunsurile tale e că factorii dominanți sunt de natură emoțională. Sistemul nervos poartă o povară care depășește ceea ce tehnicile de igienă a somnului pot rezolva. Într-o situație ca asta, cel mai eficient prim pas poate fi psihoterapia — în special EMDR, terapia cognitivă sau terapia somatică. Un terapeut specializat în traumă sau anxietate poate ajuta la restabilirea sentimentului de siguranță interioară de care corpul are nevoie ca să se lase în somn.';
+
+// ═══════════════════════════════════════
+// I) Substance withdrawal warning
+// ═══════════════════════════════════════
+
+export const substanceWithdrawalNarrative =
+	'Ai indicat că ai redus recent o substanță (somnifere, alcool, benzodiazepine). Aceasta e o perioadă în care insomnia de rebound e normală și temporară, dar poate fi intensă. Este important să faci asta sub supraveghere medicală. Dacă nu ai deja un medic care te monitorizează, te încurajăm să consulți unul înainte de a aplica alte intervenții.';
 
 // ═══════════════════════════════════════
 // Helper: Romanian list join ("a, b și c")

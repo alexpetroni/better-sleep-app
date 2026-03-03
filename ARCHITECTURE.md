@@ -23,16 +23,16 @@ Când onset e problematic ȘI maintenance e problematic → maintenance = primar
 
 ### 2. Model de arhetipuri (8, mapate 1:1 cu pattern-urile)
 
-| ID | Arhetip | Pattern |
-|----|---------|---------|
-| A | Comutare Lentă | Adorm greu (>30 min) |
-| B | Trezire Nocturnă | Mă trezesc între 2–4 AM |
-| C | Trezire Timpurie | Mă trezesc prea devreme |
-| D | Somn Ușor | Mă trezesc frecvent / ușor |
-| E | Somn Neodihnitor | Dorm dar mă trezesc obosit |
-| F | Nocturn | Nu mi-e somn până târziu |
-| G | Trezire Autonomă | Palpitații / foame |
-| H | Somn Fragmentat | Fragmentare constantă |
+| ID | Arhetip | English Name | Pattern |
+|----|---------|-------------|---------|
+| A | Comutare Lentă | The Racing Mind | Adorm greu (>30 min) |
+| B | Trezire Nocturnă | The 3AM Watcher | Mă trezesc între 2–4 AM |
+| C | Trezire Timpurie | The Early Riser | Mă trezesc prea devreme |
+| D | Somn Ușor | The Light Sleeper | Mă trezesc frecvent / ușor |
+| E | Somn Neodihnitor | The Tired Sleeper | Dorm dar mă trezesc obosit |
+| F | Nocturn | The Night Owl | Nu mi-e somn până târziu |
+| G | Trezire Autonomă | The Body Alarm | Palpitații / foame |
+| H | Somn Fragmentat | The Patchwork Sleeper | Fragmentare constantă |
 
 Cauzele mai profunde (hormonal, metabolic, histamină, respirator, etc.) NU sunt arhetipuri separate — sunt **etichete cauzale** derivate din sabotorii interni (Pas 3) și afișate pe pagina de rezultat.
 
@@ -61,7 +61,7 @@ Acțiunile sunt selectate din pool-uri per pilon, prioritizate, deduplicate.
 Pagina de rezultat prezintă informația progresiv, în 3 pași, cu text narativ cald (ton de medic funcțional).
 Stilistic identică cu pagina de diagnostic (card alb, sand-50, progress bar cu dots).
 Step indicator cu 3 pași clickabili. Dacă există arhetip secundar (onset), se afișează un fragment narativ suplimentar.
-- **Pas 1 — Ce se întâmplă**: arhetip, onset fragment (opțional), recognition, mecanism biologic, cauze
+- **Pas 1 — Ce se întâmplă**: English name (heading) + Romanian name (subtitle) + keyPhrase, onset fragment (opțional), recognition, mecanism biologic, cauze
 - **Pas 2 — De ce**: faza de adaptare, scenariu, notă emoțională (opțional), piloni
 - **Pas 3 — Ce poți face**: 3 sub-secțiuni narative cu acțiunile integrate
 

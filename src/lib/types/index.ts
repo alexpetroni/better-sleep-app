@@ -86,7 +86,11 @@ export type EmotionalSaboteurId =
 	| 'UNRESOLVED_TRAUMA'
 	| 'DEPRESSION'
 	| 'CHRONIC_ANXIETY'
-	| 'RELATIONAL_STRESS';
+	| 'RELATIONAL_STRESS'
+	| 'PERFECTIONISM'
+	| 'BURNOUT'
+	| 'LIFE_TRANSITION'
+	| 'LONELINESS';
 
 // ═══════════════════════════════════════
 // SABOTEUR ITEM (shared for steps 2 & 3)
@@ -167,12 +171,14 @@ export interface ProtocolAction {
 	text: string;
 	pillar: PillarId;
 	priority: number;
+	contraindication?: string;
 }
 
 export interface ProtocolPhase {
 	id: ProtocolPhaseId;
 	name: string;
 	description: string;
+	timeline: string;
 	actions: ProtocolAction[];
 }
 
@@ -263,6 +269,7 @@ export interface DiagnosticResult {
 	selectedEmotionalSaboteurs: { id: EmotionalSaboteurId; label: string }[];
 	safetyScore: number;
 	safetyCompromised: boolean;
+	substanceWithdrawalWarning: boolean;
 	scenario: Scenario;
 	compromisedPillars: { pillar: Pillar; status: PillarStatus }[];
 	protocol: ProtocolPhase[];

@@ -9,12 +9,14 @@
     onsetFragments,
     getArchetypeMechanism,
     buildCausesNarrative,
-    adaptationNarratives,
+    getAdaptationNarrative,
     scenarioNarratives,
-    emotionalDominanceNarrative,
+    buildEmotionalDominanceNarrative,
     buildPillarsNarrative,
-    buildProtocolPhaseNarrative
+    buildProtocolPhaseNarrative,
+    substanceWithdrawalNarrative
   } from '$lib/data/narratives';
+  import type { EmotionalSaboteurId } from '$lib/types';
 
   let diagnosticResult: DiagnosticResult | null = $state(null);
   let resultStep = $state<1 | 2 | 3>(1);
@@ -69,11 +71,17 @@
     morningState: morningStateFragments[diagnosticResult.morningState],
     mechanism: getArchetypeMechanism(diagnosticResult.archetype.id, diagnosticResult.demographics),
     causes: buildCausesNarrative(diagnosticResult.causalLabels, diagnosticResult.demographics),
-    adaptation: adaptationNarratives[diagnosticResult.adaptationPhase.id],
+    adaptation: getAdaptationNarrative(diagnosticResult.adaptationPhase.id, diagnosticResult.demographics?.ageRange ?? null),
     scenario: scenarioNarratives[diagnosticResult.scenario.id],
+    emotionalDominance: buildEmotionalDominanceNarrative(diagnosticResult.selectedEmotionalSaboteurs.map(s => s.id as EmotionalSaboteurId)),
     pillars: buildPillarsNarrative(diagnosticResult.compromisedPillars),
     protocolPhases: diagnosticResult.protocol.map(buildProtocolPhaseNarrative),
   } : null);
+
+  let hasSaboteurs = $derived(diagnosticResult ?
+    diagnosticResult.externalSaboteurCount + diagnosticResult.internalSaboteurCount + diagnosticResult.emotionalSaboteurCount > 0
+    : false
+  );
 </script>
 
 {#if diagnosticResult && narrative}
@@ -200,6 +208,14 @@
             <div class="mt-8 space-y-5">
               <p class="text-[15px] leading-relaxed text-sand-700">{narrative.adaptation}</p>
 
+              <!-- Substance withdrawal warning -->
+              {#if diagnosticResult.substanceWithdrawalWarning}
+                <div class="rounded-xl border-l-4 border-l-red-400 bg-red-50/40 px-5 py-4">
+                  <p class="mb-2 text-xs font-bold uppercase tracking-wider text-red-600">Atenție importantă</p>
+                  <p class="text-[15px] leading-relaxed text-sand-700">{substanceWithdrawalNarrative}</p>
+                </div>
+              {/if}
+
               <div class="rounded-xl border border-warm-200/60 bg-warm-50/40 px-5 py-4">
                 <p class="mb-2 text-xs font-bold uppercase tracking-wider text-warm-600">Tipul de abordare recomandat</p>
                 <p class="text-[15px] leading-relaxed text-sand-800">{narrative.scenario}</p>
@@ -207,8 +223,45 @@
 
               {#if diagnosticResult.saboteurDominance === 'EMOTIONAL'}
                 <div class="rounded-xl border-l-4 border-l-warm-400 bg-warm-50/40 px-5 py-4">
-                  <p class="mb-2 text-xs font-bold uppercase tracking-wider text-warm-600">Atenție</p>
-                  <p class="text-[15px] leading-relaxed text-sand-700">{emotionalDominanceNarrative}</p>
+                  <p class="mb-2 text-xs font-bold uppercase tracking-wider text-warm-600">Recomandare</p>
+                  <p class="text-[15px] leading-relaxed text-sand-700">{narrative.emotionalDominance}</p>
+                </div>
+              {/if}
+
+              <!-- User's selected saboteurs -->
+              {#if hasSaboteurs}
+                <div class="rounded-xl border border-sand-200 bg-sand-50/80 px-5 py-4">
+                  <p class="mb-3 text-xs font-bold uppercase tracking-wider text-night-500">Ce ai identificat</p>
+                  {#if diagnosticResult.selectedExternalSaboteurs.length > 0}
+                    <div class="mb-3">
+                      <p class="mb-1.5 text-xs font-semibold text-sand-500">Factori externi ({diagnosticResult.externalSaboteurCount})</p>
+                      <ul class="space-y-0.5">
+                        {#each diagnosticResult.selectedExternalSaboteurs as sab}
+                          <li class="text-[13px] leading-relaxed text-sand-600">— {sab.label}</li>
+                        {/each}
+                      </ul>
+                    </div>
+                  {/if}
+                  {#if diagnosticResult.selectedInternalSaboteurs.length > 0}
+                    <div class="mb-3">
+                      <p class="mb-1.5 text-xs font-semibold text-sand-500">Factori interni ({diagnosticResult.internalSaboteurCount})</p>
+                      <ul class="space-y-0.5">
+                        {#each diagnosticResult.selectedInternalSaboteurs as sab}
+                          <li class="text-[13px] leading-relaxed text-sand-600">— {sab.label}</li>
+                        {/each}
+                      </ul>
+                    </div>
+                  {/if}
+                  {#if diagnosticResult.selectedEmotionalSaboteurs.length > 0}
+                    <div>
+                      <p class="mb-1.5 text-xs font-semibold text-sand-500">Factori emoționali ({diagnosticResult.emotionalSaboteurCount})</p>
+                      <ul class="space-y-0.5">
+                        {#each diagnosticResult.selectedEmotionalSaboteurs as sab}
+                          <li class="text-[13px] leading-relaxed text-sand-600">— {sab.label}</li>
+                        {/each}
+                      </ul>
+                    </div>
+                  {/if}
                 </div>
               {/if}
 
@@ -243,14 +296,32 @@
                     <span class="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br {phaseColors[i]} text-xs font-bold text-white shadow-sm">
                       {i + 1}
                     </span>
-                    <h3 class="font-serif text-base font-semibold text-sand-900">{phase.name}</h3>
+                    <div>
+                      <h3 class="font-serif text-base font-semibold text-sand-900">{phase.name}</h3>
+                      <p class="text-[11px] text-sand-400">{phase.timeline}</p>
+                    </div>
                   </div>
                   <!-- Phase content -->
                   <div class="bg-white px-5 py-4">
                     <p class="text-[15px] leading-relaxed text-sand-700">{narrative.protocolPhases[i]}</p>
+                    <!-- Contraindication notes -->
+                    {#each phase.actions.filter(a => a.contraindication) as action}
+                      <p class="mt-2 rounded-lg border border-warm-200/60 bg-warm-50/30 px-3 py-2 text-xs leading-relaxed text-warm-700">
+                        {action.contraindication}
+                      </p>
+                    {/each}
                   </div>
                 </div>
               {/each}
+
+              <!-- Supplements disclaimer -->
+              {#if diagnosticResult.protocol.some(p => p.actions.some(a => a.contraindication))}
+                <div class="rounded-lg border border-warm-100 bg-warm-50/30 px-4 py-3">
+                  <p class="text-xs leading-relaxed text-warm-600">
+                    Suplimentele sunt opționale și au rol de sprijin, nu de înlocuire. Dacă iei medicamente, consultă medicul înainte de a adăuga orice supliment.
+                  </p>
+                </div>
+              {/if}
 
               <!-- Closing message -->
               <div class="rounded-xl border border-night-100 bg-night-50/40 px-5 py-5">
@@ -261,7 +332,10 @@
                   Somnul nu e ceva ce poți forța — e ceva ce permiți. Acum ai o hartă clară a ce se întâmplă și de ce.
                 </p>
                 <p class="mt-2 text-[15px] leading-relaxed text-sand-700">
-                  Începe cu Faza 1: alege 2-3 lucruri din cele de mai sus și aplică-le consistent timp de 2 săptămâni. Apoi observă ce s-a schimbat. Nu totul deodată — un pas la un moment dat.
+                  Începe cu Faza 1 (~2 săptămâni): alege 2-3 lucruri și aplică-le consistent. Apoi observă ce s-a schimbat. Faza 2 (2-4 săptămâni): adaugă elementele de reparare. Faza 3 e de menținere pe termen lung.
+                </p>
+                <p class="mt-2 text-[15px] leading-relaxed text-sand-700">
+                  Dacă după 4-6 săptămâni nu observi nicio îmbunătățire, consultă un specialist în medicină funcțională sau un medic de somn. Uneori e nevoie de o perspectivă exterioară.
                 </p>
               </div>
 

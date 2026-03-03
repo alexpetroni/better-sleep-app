@@ -1,5 +1,20 @@
 # Better Sleep Diagnostic Flow™
 
+## Session Start Protocol
+
+Before doing anything else, read these files:
+- ARCHITECTURE.md
+- TASKS.md  
+- DECISIONS.md
+
+Then give me a short recap of:
+1. What this project is
+2. Current architecture
+3. What we're supposed to work on today
+4. Any recent decisions that matter for today's work
+
+Wait for my instructions before proceeding.
+
 ## Despre proiect
 
 Aplicație web de diagnostic al somnului în 7 pași, care identifică tiparul de somn al utilizatorului, sabotorii externi, interni și emoționali, evaluează siguranța biologică, colectează un profil demografic și generează un protocol personalizat în 3 faze.
@@ -81,3 +96,20 @@ src/
 - **După modificări:** rulează `npm run build` pentru verificare
 - **Componente de bază** (`QuestionCard`, `OptionButton`, `CheckboxOption`) — stilizate pentru proiect; modificări cu atenție
 - **La adăugarea de tipuri noi:** actualizează `src/lib/types/index.ts` mai întâi
+
+
+## Session End Protocol
+
+When I say "wrap up", "done for today", "end session", or similar:
+
+1. **Scan all changes** made during this session (git diff or file changes).
+
+2. **Update project docs** based on what changed:
+   - `CLAUDE.md` — only if global rules or conventions changed. Do not touch otherwise.
+   - `ARCHITECTURE.md` — only if components were added/removed or data flow changed.
+   - `TASKS.md` — move completed items to Done, update Today and Next sections.
+   - `DECISIONS.md` — append a dated entry for any significant decision, refactor, or trade-off made during the session.
+
+3. **Show me diffs** for every file you want to modify. Do not save until I approve.
+
+4. Wait for my confirmation before writing any changes.

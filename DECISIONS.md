@@ -78,3 +78,7 @@ Step 1 avea 8 opțiuni radio care amestecau probleme de adormire (A, F), de men�
 ## [2026-02-27] Rezultat unificat vizual cu diagnosticul — eliminare dark heroes
 
 Pagina de rezultat avea un stil complet diferit: hero sections dark (night-900) cu radial gradients, step indicator cu card-buttons colorate, tipografie și layout dramatic. Arăta ca un alt site față de pagina de diagnostic (light, card-based, minimal). Am refăcut pagina de rezultat să folosească exact același limbaj vizual: background sand-50, card-uri albe cu rounded-2xl + shadow-md + ring + accent line (identic cu QuestionCard), progress bar cu dots (identic cu StepIndicator), logo persistent. Pașii din rezultat rămân clickabili pentru navigare liberă.
+
+## [2026-03-02] Nume englezești memorabile pentru arhetipuri — „The Racing Mind", nu „Slow Switch-Off"
+
+Numele englezești ale arhetipurilor (`nameEn`) erau fie clinice („Non-Restorative Sleep", „Autonomic Waker"), fie generice („Night Waker", „Fragmented Sleep"). Nu erau memorabile și nu invitau la identificare. Le-am înlocuit cu nume de tip personalitate — „The Racing Mind", „The 3AM Watcher", „The Body Alarm", „The Patchwork Sleeper" — păstrând cele care deja funcționau (The Night Owl, The Light Sleeper, The Early Riser). Toate urmează pattern-ul „The [X]" pentru consistență. Numele englezești sunt acum heading-ul principal pe pagina de rezultat (Step 1), cu numele românesc ca subtitle în small caps dedesubt.

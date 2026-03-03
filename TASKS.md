@@ -2,11 +2,7 @@
 
 ## Today
 
-- [x] Step 1 restructurat: 3 sub-întrebări (onset + maintenance + morning) cu reveal progresiv
-- [x] Derivare arhetip primar/secundar din onset + maintenance
-- [x] Logo "Better Sleep" persistent pe diagnostic + rezultat (clickabil spre landing)
-- [x] Rezultat redesign: unificat vizual cu pagina diagnostic (card-based, progress bar)
-- [x] Actualizare documentație proiect
+(waiting for next instructions)
 
 ## Next
 
@@ -30,6 +26,12 @@
 - [ ] Variante de limbă (engleză)
 - [ ] Export PDF al rezultatului
 - [ ] Integrare cu dispozitive de somn (wearables)
+
+## Done (2026-03-02)
+
+- [x] English archetype names: memorable, shame-free (The Racing Mind, The 3AM Watcher, etc.)
+- [x] Result page: English name as primary heading, Romanian name as small-caps subtitle
+- [x] Actualizare documentație proiect
 
 ## Done (2026-02-27)
 

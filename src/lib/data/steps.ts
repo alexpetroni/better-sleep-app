@@ -289,6 +289,30 @@ export const step4Items: SaboteurItem[] = [
 		label: 'Acasă e tensiune, relația cu partenerul sau familia mă consumă',
 		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'EMOTIONAL_CLOSURE'],
 		causalLabel: 'EMOTIONAL'
+	},
+	{
+		id: 'PERFECTIONISM' satisfies EmotionalSaboteurId,
+		label: 'Simt nevoia să am totul sub control, iar seara nu pot „opri" lista de responsabilități',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'EMOTIONAL_CLOSURE'],
+		causalLabel: 'EMOTIONAL'
+	},
+	{
+		id: 'BURNOUT' satisfies EmotionalSaboteurId,
+		label: 'Munca mă epuizează, dar nu pot pune limită — mă gândesc la job și seara',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'MITOCHONDRIAL_INTEGRITY'],
+		causalLabel: 'EMOTIONAL'
+	},
+	{
+		id: 'LIFE_TRANSITION' satisfies EmotionalSaboteurId,
+		label: 'Trec printr-o schimbare mare de viață (copil nou, pensionare, mutare, despărțire recentă)',
+		pillarImpact: ['EMOTIONAL_CLOSURE', 'HORMONAL_HARMONY'],
+		causalLabel: 'EMOTIONAL'
+	},
+	{
+		id: 'LONELINESS' satisfies EmotionalSaboteurId,
+		label: 'Mă simt singur/ă sau izolat/ă — nu am cu cine vorbi despre ce simt',
+		pillarImpact: ['EMOTIONAL_CLOSURE', 'NEUROVEGETATIVE_SAFETY'],
+		causalLabel: 'EMOTIONAL'
 	}
 ];
 
@@ -304,18 +328,18 @@ export const step5Questions: SafetyQuestion[] = [
 	},
 	{
 		id: 'S2',
-		text: 'Gândurile zilei mă urmăresc seara în pat?',
-		pillarImpact: ['EMOTIONAL_CLOSURE']
+		text: 'Mă tresăr ușor — de la zgomote, mișcări sau chiar gânduri neașteptate?',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY']
 	},
 	{
 		id: 'S3',
-		text: 'Simt că energia mea a scăzut semnificativ în ultimele luni?',
-		pillarImpact: ['MITOCHONDRIAL_INTEGRITY']
+		text: 'Chiar și când sunt epuizat/ă, nu reușesc să ațipesc sau să mă relaxez fizic?',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY', 'MITOCHONDRIAL_INTEGRITY']
 	},
 	{
 		id: 'S4',
-		text: 'Mă trezesc obosit/ă aproape zilnic?',
-		pillarImpact: ['GLYMPHATIC_FLOW', 'MITOCHONDRIAL_INTEGRITY']
+		text: 'Simt tensiune în maxilar, gât sau umeri când mă culc, fără un motiv clar?',
+		pillarImpact: ['NEUROVEGETATIVE_SAFETY']
 	},
 	{
 		id: 'S5',

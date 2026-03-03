@@ -11,9 +11,9 @@ type PhaseActions = {
 const SHARED = {
 	NO_ALCOHOL: 'Fără alcool seara (perturbă somnul profund și împiedică curățarea creierului noaptea)',
 	NO_STIMULATING_CONTENT: 'Fără conținut stimulant seara (știri, social media, jocuri, discuții aprinse)',
-	DAILY_MOVEMENT: '20-30 minute mișcare zilnică (plimbare rapidă, zone 2)',
+	DAILY_MOVEMENT: '20-30 minute mișcare zilnică (plimbare rapidă, zone 2 cardio)',
 	HYDRATION: 'Hidratare adecvată, concentrată în prima parte a zilei',
-	OMEGA3: 'Omega-3 zilnic (susține echilibrul hormonal și sănătatea creierului)'
+	OMEGA3: 'Omega-3 zilnic — 1-2g EPA+DHA (susține echilibrul hormonal și sănătatea creierului)'
 } as const;
 
 export const pillarActions: Record<PillarId, PhaseActions> = {
@@ -58,8 +58,8 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 			{ text: 'Gustare mică proteică înainte de somn dacă ai treziri de foame', pillar: 'METABOLIC_QUIET', priority: 2 }
 		],
 		regulate: [
-			{ text: 'Magneziu glicinat seara (sprijină metabolismul și relaxarea)', pillar: 'METABOLIC_QUIET', priority: 1 },
-			{ text: 'Glicină înainte de somn (susține somnul profund)', pillar: 'METABOLIC_QUIET', priority: 2 }
+			{ text: 'Magneziu glicinat seara — 200-400mg (sprijină metabolismul și relaxarea)', pillar: 'METABOLIC_QUIET', priority: 1, contraindication: 'Contraindicat în insuficiență renală. Consultă medicul dacă ai probleme renale.' },
+			{ text: 'Glicină înainte de somn — 3g (susține somnul profund)', pillar: 'METABOLIC_QUIET', priority: 2 }
 		]
 	},
 	HORMONAL_HARMONY: {
@@ -84,7 +84,7 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 			{ text: SHARED.HYDRATION, pillar: 'MITOCHONDRIAL_INTEGRITY', priority: 2 }
 		],
 		regulate: [
-			{ text: 'CoQ10 sau PQQ pentru suport mitocondrial (consultă un specialist)', pillar: 'MITOCHONDRIAL_INTEGRITY', priority: 1 },
+			{ text: 'CoQ10 (100-200mg) sau PQQ (10-20mg) pentru suport mitocondrial (consultă un specialist)', pillar: 'MITOCHONDRIAL_INTEGRITY', priority: 1, contraindication: 'CoQ10 interacționează cu anticoagulantele (warfarină). Consultă medicul dacă iei medicamente pentru inimă sau sânge.' },
 			{ text: 'Expunere la frig controlat (duș rece scurt dimineața)', pillar: 'MITOCHONDRIAL_INTEGRITY', priority: 3 }
 		]
 	},
@@ -127,7 +127,7 @@ export const pillarActions: Record<PillarId, PhaseActions> = {
 		regulate: [
 			{ text: 'Practică recunoștința seara (3 lucruri pentru care ești recunoscător)', pillar: 'EMOTIONAL_CLOSURE', priority: 2 },
 			{ text: 'Tranziție conștientă zi→seară: schimbă hainele, spală-te pe față, semnalizează corpului', pillar: 'EMOTIONAL_CLOSURE', priority: 1 },
-			{ text: 'Consideră psihoterapie (EMDR, terapie cognitivă) dacă ai experiențe nerezolvate', pillar: 'EMOTIONAL_CLOSURE', priority: 1 }
+			{ text: 'Consideră psihoterapie dacă ai experiențe nerezolvate (vezi recomandarea specifică de mai jos)', pillar: 'EMOTIONAL_CLOSURE', priority: 1 }
 		]
 	}
 };
